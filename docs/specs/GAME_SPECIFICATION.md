@@ -1,530 +1,117 @@
-# Dungeon Escape - Game Specification
+# Dungeon Escape: Game Specification
 
-## 1. Game Overview
+## 1. Purpose
 
-## Title
+Build a complete, single-player, 2D top-down roguelite action game for Linux. A run takes the player through connected dungeon rooms, combat encounters, run-scoped upgrades, and a final boss. Defeating the boss completes the escape.
 
-Dungeon Escape
+The implementation may choose its language, engine, architecture, and asset pipeline. Requirements below describe observable behavior rather than implementation details.
 
-## Genre
+## 2. Design goals
 
-2D Top-Down Roguelite Action Game
+- Responsive, predictable movement and attacks.
+- Readable combat that rewards positioning and dodging.
+- Upgrade choices that change the current run.
+- Room, encounter, and reward variation between runs.
+- Clear visual, audio, and state feedback.
 
-## Game Concept
+Visual clarity takes priority over graphical complexity.
 
-Dungeon Escape is a single-player action roguelite where the player explores a dangerous dungeon composed of interconnected rooms, defeats enemies, collects temporary upgrades, and attempts to defeat the final guardian to escape.
+## 3. Controls
 
-Each playthrough should provide a slightly different experience through randomized dungeon layouts, enemy encounters, and upgrade choices.
+The game must be playable with a keyboard and mouse on Linux.
 
-The game should focus on:
+- Move with WASD or the arrow keys.
+- Use the primary attack with Space or the primary mouse button.
+- Show the controls on the menu or in the run instructions.
+- A controller is optional.
 
-- Responsive controls.
-- Simple but engaging combat.
-- Meaningful progression during each run.
-- Replayability through procedural variation.
-- Clear visual and gameplay feedback.
+The attack direction may follow the last movement direction or the mouse pointer, but it must be clear and usable.
 
----
+## 4. Run flow and game states
 
-# 2. Core Gameplay Loop
+A run follows this sequence:
 
-The player experience should follow this loop:
+1. Start a new run from the main menu.
+2. Explore and clear the dungeon's non-boss rooms.
+3. Collect at least one upgrade before the boss.
+4. Reach and defeat the final boss to win and escape.
+5. If player health reaches zero first, show Game Over.
 
-1. Start a new dungeon run.
-2. Enter the dungeon.
-3. Explore rooms.
-4. Encounter enemies.
-5. Defeat enemies using combat mechanics.
-6. Receive rewards and upgrades.
-7. Continue exploring deeper areas.
-8. Reach the final encounter.
-9. Defeat the boss.
-10. Complete the run.
+The game must provide Main Menu, Playing, Game Over, and Victory states. Game Over and Victory must each offer a way to start a fresh run or return to the main menu.
 
-If the player loses all health:
+Starting a fresh run resets health, run upgrades, room progress, and encounter state. No permanent meta-progression is required.
 
-- The run ends.
-- The player returns to the initial state.
-- A new run can be started.
+## 5. Player and combat
 
----
+The player must be able to move, attack enemies, take damage, and be defeated.
 
-# 3. Player Character
+- Track current and maximum health; current health stays between zero and maximum health.
+- The basic attack has a defined hit area or range, can damage enemies, and has visible feedback.
+- Taking damage reduces health and briefly grants invulnerability so one continuous contact does not cause repeated hits.
+- Make damage, defeat, and invulnerability feedback distinguishable from ordinary movement and attacks.
+- Enemy attacks must be avoidable through movement or positioning.
 
-## Overview
+## 6. Enemies
 
-The player controls a character exploring the dungeon and fighting enemies.
+Include at least three enemy archetypes:
 
-The player should feel responsive and predictable, allowing precise movement and combat decisions.
+- **Melee:** pursues the player and attacks at close range.
+- **Ranged:** attacks from a distance and gives a readable cue before or during its attack.
+- **Elite:** is stronger than a regular enemy and has at least one distinguishing trait, such as higher health, higher damage, a different movement speed, or a distinct attack.
 
----
+The boss must have health and at least two recognizable attack patterns. At least one pattern must distinguish it from regular enemies.
 
-## Movement
+All enemy types can detect or react to the player, take damage, attack, and be defeated.
 
-The player must be able to:
+## 7. Dungeon and rooms
 
-- Move freely in multiple directions.
-- Navigate dungeon rooms.
-- Avoid enemy attacks.
-- Position strategically during combat.
+A generated run must contain:
 
-Movement should feel responsive, with minimal input delay.
+- One starting room.
+- At least two non-boss combat rooms before the boss.
+- One final boss room.
+- Traversable connections between consecutive rooms.
+- At least one reward opportunity before the boss.
 
----
+A combat room blocks its exits while hostile enemies remain and opens them after all are defeated. The player must receive a visible indication of whether the room is still active or cleared.
 
-## Health System
+Run generation must provide multiple possible room layouts, enemy encounters, and upgrade offers. Provide a documented seed input through a development option, command-line argument, or equivalent. The same seed must reproduce the same layout, encounter composition, and upgrade offers. Document two test seeds that produce different layouts, encounters, and offers.
 
-The player has:
+## 8. Rewards and upgrades
 
-- Maximum health.
-- Current health.
+Upgrades last until the current run ends and reset when a fresh run starts.
 
-The player:
+- Provide at least three distinct upgrade effects during a run.
+- Offer at least two different upgrade choices at each upgrade selection.
+- Let the player select one option and return to exploration.
+- At least one choice must affect combat; another must affect movement or survival.
+- Choices must have different effects, not just different names.
 
-- Loses health when receiving damage.
-- Cannot have health above the maximum value.
-- Is defeated when health reaches zero.
+Possible effects include increased damage, faster movement, more maximum health, or a modified attack. A reward may also provide healing or another temporary advantage.
 
-The game should clearly communicate:
+## 9. User interface, visuals, and audio
 
-- Current health.
-- Damage received.
-- Death state.
+The main menu must include a Start option. During play, the HUD must show player health, current upgrades, and room progress.
 
----
+Maintain a consistent visual style and make the player, enemies, attacks, environment, rewards, and room state distinguishable.
 
-## Player Attack
+Provide at least two distinct audio cues selected from player attack, enemy attack, damage received, enemy defeated, victory, and defeat. Audio must reinforce the corresponding gameplay event.
 
-The player must have a basic attack ability.
+## 10. Completion and acceptance checklist
 
-The attack should:
+The project is complete when it can be launched on Linux by following its documentation and passes these checks:
 
-- Damage enemies.
-- Have a defined range or area.
-- Have appropriate feedback.
-- Support upgrades or modifications.
+- **A1 — Launch and controls:** The documented launch steps work. The player can move and attack using the documented controls.
+- **A2 — Run states:** The main menu starts a run; zero health reaches Game Over; defeating the boss reaches Victory. Both end states allow a fresh run or return to the menu.
+- **A3 — Dungeon:** A run has the required room counts and connected route. Combat exits stay blocked until the room is clear and then open.
+- **A4 — Enemies and combat:** The three archetypes behave as specified; player and enemy attacks can deal damage; damage, defeat, and invulnerability are communicated.
+- **A5 — Rewards:** Before the boss, a run offers at least three distinct upgrade effects across its selection events, with at least two choices per event. The selected effect applies, persists through the run, and resets on a fresh run.
+- **A6 — Boss and victory:** The boss has health and at least two attack patterns, including one distinct pattern; defeating it completes the escape.
+- **A7 — Variation and repeatability:** The two documented test seeds produce the documented differences. Repeating a seed reproduces its layout, encounters, and upgrade offers.
+- **A8 — Feedback and HUD:** The required health, upgrade, and room-progress information is visible; room state is clear; at least two distinct audio cues play for their events.
 
-Examples of feedback:
+For each check, the project documentation should name the command or manual steps used and summarize the observed result. Report any check that could not be verified.
 
-- Attack animation.
-- Visual effects.
-- Sound effects.
+## 11. Technical freedom
 
----
-
-## Damage and Invulnerability
-
-When receiving damage:
-
-- The player loses health.
-- The player briefly becomes invulnerable.
-- The player receives visual feedback.
-
-This prevents continuous damage from a single interaction.
-
----
-
-# 4. Combat System
-
-## Overview
-
-Combat is real-time and should require player positioning and decision-making.
-
-The player should need to:
-
-- Avoid attacks.
-- Choose targets.
-- Manage distance.
-- Adapt to different enemy behaviors.
-
----
-
-## Combat Requirements
-
-The system must support:
-
-- Player attacks.
-- Enemy attacks.
-- Damage calculation.
-- Health reduction.
-- Entity defeat.
-- Combat feedback.
-
----
-
-# 5. Enemy System
-
-The dungeon contains multiple enemy types with different behaviors.
-
-Enemies should:
-
-- Exist inside dungeon rooms.
-- Detect or react to the player.
-- Attack the player.
-- Receive damage.
-- Be defeated.
-
----
-
-# 6. Enemy Types
-
-The game must include at least three enemy archetypes.
-
----
-
-## 6.1 Melee Enemy
-
-### Description
-
-A close-range enemy focused on pursuing and attacking the player.
-
-### Behavior
-
-The enemy should:
-
-- Detect the player.
-- Move toward the player.
-- Attack when within range.
-- Deal contact or close-range damage.
-
-### Gameplay Purpose
-
-Creates pressure and forces the player to manage positioning.
-
----
-
-## 6.2 Ranged Enemy
-
-### Description
-
-An enemy that attacks from distance.
-
-### Behavior
-
-The enemy should:
-
-- Maintain distance from the player.
-- Launch ranged attacks.
-- Create areas of danger the player must avoid.
-
-### Gameplay Purpose
-
-Introduces a different combat challenge compared to melee enemies.
-
----
-
-## 6.3 Elite Enemy
-
-### Description
-
-A stronger enemy variant that creates a higher difficulty encounter.
-
-### Behavior
-
-The elite enemy should have at least one difference from regular enemies:
-
-Examples:
-
-- More health.
-- Higher damage.
-- Faster movement.
-- Unique attack behavior.
-- Special ability.
-
-### Gameplay Purpose
-
-Creates memorable encounters and prepares the player for the boss.
-
----
-
-# 7. Dungeon System
-
-## Overview
-
-The game takes place inside a dungeon composed of connected rooms.
-
-The dungeon should feel different across multiple playthroughs.
-
----
-
-## Dungeon Requirements
-
-The dungeon must include:
-
-- Starting area.
-- Multiple exploration rooms.
-- Enemy encounter rooms.
-- Reward opportunities.
-- Final boss room.
-
----
-
-## Procedural Variation
-
-The dungeon generation should provide variation between runs.
-
-Possible approaches:
-
-- Random room selection.
-- Random room connections.
-- Random encounter placement.
-- Random reward placement.
-
-The exact generation method is open.
-
----
-
-# 8. Room System
-
-Each room represents a gameplay area.
-
-Rooms may contain:
-
-- Enemies.
-- Rewards.
-- Obstacles.
-- Special events.
-- Boss encounters.
-
----
-
-## Room Completion
-
-A combat room should:
-
-- Prevent progression while enemies remain.
-- Allow progression after enemies are defeated.
-
-The player should receive clear feedback about room state.
-
----
-
-# 9. Progression System
-
-## Overview
-
-During each run, the player becomes stronger through temporary upgrades.
-
-Progression should create meaningful choices.
-
----
-
-## Upgrade System Requirements
-
-The game must include:
-
-- Multiple upgrade options.
-- Different upgrade effects.
-- Permanent effects during the current run.
-
-Examples:
-
-### Damage Upgrade
-
-Effect:
-
-- Increases attack damage.
-
----
-
-### Speed Upgrade
-
-Effect:
-
-- Improves player movement speed.
-
----
-
-### Health Upgrade
-
-Effect:
-
-- Increases maximum health.
-
----
-
-### Attack Modifier
-
-Effect:
-
-- Changes attack behavior.
-
-Examples:
-
-- Additional projectile.
-- Larger attack area.
-- Faster attacks.
-
----
-
-# 10. Reward System
-
-The player should receive rewards during exploration.
-
-Rewards may include:
-
-- Character upgrades.
-- Healing.
-- Temporary advantages.
-- Other gameplay improvements.
-
-Rewards should encourage continued exploration.
-
----
-
-# 11. Boss Encounter
-
-## Overview
-
-The dungeon ends with a final boss encounter.
-
-The boss should represent the final challenge of the run.
-
----
-
-## Boss Requirements
-
-The boss must:
-
-- Have significantly higher difficulty than regular enemies.
-- Have a health system.
-- Have unique behavior.
-- Require the player to use learned mechanics.
-
----
-
-## Victory Condition
-
-The player wins when:
-
-- The boss is defeated.
-
-After victory:
-
-- The game displays a completion state.
-
----
-
-# 12. User Interface
-
-The game must provide basic navigation and gameplay information.
-
----
-
-## Main Menu
-
-Required:
-
-- Start new game option.
-
-Optional:
-
-- Settings.
-- Exit option.
-
----
-
-## Gameplay HUD
-
-The HUD should display relevant information:
-
-Required:
-
-- Player health.
-
-Recommended:
-
-- Current upgrades.
-- Progress information.
-
----
-
-## Game States
-
-The game must support:
-
-## Playing
-
-Normal gameplay state.
-
-## Game Over
-
-Displayed after player defeat.
-
-Must allow restarting.
-
-## Victory
-
-Displayed after completing the dungeon.
-
----
-
-# 13. Visual Direction
-
-The game should have a coherent visual identity.
-
-Requirements:
-
-- Consistent art style.
-- Clear distinction between:
-  - player;
-  - enemies;
-  - attacks;
-  - environment;
-  - rewards.
-
-Visual clarity is more important than graphical complexity.
-
----
-
-# 14. Audio Direction
-
-The game should include basic audio feedback.
-
-Examples:
-
-- Player attack.
-- Enemy attack.
-- Damage received.
-- Enemy defeated.
-- Victory.
-- Defeat.
-
-Audio should improve player feedback.
-
----
-
-# 15. Completion Criteria
-
-The game is considered complete when:
-
-- The player can start a new run.
-- The player can explore a dungeon.
-- The player can fight enemies.
-- The player can collect upgrades.
-- The player can reach the final boss.
-- The player can defeat the boss.
-- The player can win or lose a complete run.
-- The project can be executed following the provided documentation.
-
----
-
-# 16. Technical Freedom
-
-The implementation details are intentionally unspecified.
-
-The development team may choose:
-
-- Programming language.
-- Game engine.
-- Architecture.
-- Project organization.
-- Asset pipeline.
-- Internal systems.
-
-The final implementation should prioritize:
-
-- Maintainability.
-- Reliability.
-- Clear structure.
-- Complete gameplay experience.
+The development team may choose the programming language, game engine, architecture, project organization, and assets. Prioritize a reliable, maintainable implementation and a complete playable run.
