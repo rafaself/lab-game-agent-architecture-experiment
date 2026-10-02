@@ -1,0 +1,78 @@
+{
+  "treatment": "Solo",
+  "order": 1,
+  "sourceCommit": "c1d131aa5d471434e857fd73042351a05157d72c",
+  "parentBaseline": "2c7e312d8d7dc4bf85de8cf69dafd5a859c2b7d3",
+  "model": "gpt-6.1-sol",
+  "reasoning": "xhigh",
+  "startUtc": "2026-10-02T05:01:12Z",
+  "startLocal": "2026-10-02T02:01:12-03:00",
+  "deadlineUtc": "2026-10-02T06:31:12Z",
+  "specialists": 0,
+  "ownership": "Sole engineer owns planning, implementation, tests, integration, browser verification and reporting.",
+  "assignedBrowserSession": "🧪 Solo Rerun",
+  "port": 8101,
+  "runtime": {
+    "node": "25.9.0",
+    "python": "3.14.7",
+    "linux": "7.2.7-100.fc43.x86_64"
+  },
+  "specSha256": "39b81f2fee290781189c4d847c883d7d501aa1f6a8d55a5b44a00b81c194caaf",
+  "sharedPromptSha256": "a118613f15fd1dc5c6a5c1d51673774bf24522b50ad84d828e55e331288f2d49",
+  "soloPromptSha256": "29fd9f9b2e10f7fcadbbc3fb82adbec7d10624f19c1ba3526774639dac63f84c",
+  "endUtc": "2026-10-02T06:04:53Z",
+  "endLocal": "2026-10-02T03:04:53-03:00",
+  "elapsedSeconds": 3821,
+  "limitHit": false,
+  "interruptions": [],
+  "actualBrowser": "Codex In-app Browser; fresh tab; automation session named 🧪 Solo Rerun",
+  "browserProfileDeviation": "Assigned Chrome connection was unavailable; a dedicated Chrome profile could not be guaranteed.",
+  "permissions": "Unrestricted filesystem; approval policy never; network enabled",
+  "dependenciesAdded": 0,
+  "handoffs": [],
+  "leadAuthoredCode": "Entire game; Solo treatment requires sole engineer ownership",
+  "reworkCycles": 4,
+  "acceptance": {
+    "A1": {
+      "outcome": "INCOMPLETE",
+      "evidence": "automated only"
+    },
+    "A2": {
+      "outcome": "PASS",
+      "evidence": "browser verified"
+    },
+    "A3": {
+      "outcome": "PASS",
+      "evidence": "browser verified"
+    },
+    "A4": {
+      "outcome": "PASS",
+      "evidence": "browser verified"
+    },
+    "A5": {
+      "outcome": "PASS",
+      "evidence": "browser verified"
+    },
+    "A6": {
+      "outcome": "PASS",
+      "evidence": "browser verified"
+    },
+    "A7": {
+      "outcome": "PASS",
+      "evidence": "automated only"
+    },
+    "A8": {
+      "outcome": "INCOMPLETE",
+      "evidence": "automated only"
+    }
+  },
+  "reviewer": "Implementing solo agent; treatment known; provisional self-ratings; no independent reviewer",
+  "ratings": {
+    "controlResponsiveness": 3,
+    "combatReadability": 4,
+    "upgradeChoiceQuality": 3,
+    "runToRunVariety": 3,
+    "overallCoherence": 4
+  },
+  "cleanup": "Owned server stopped and Solo browser tab closed before the Sequential condition"
+}

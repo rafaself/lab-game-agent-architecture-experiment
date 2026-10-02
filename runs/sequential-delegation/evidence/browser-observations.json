@@ -1,0 +1,3510 @@
+[
+  {
+    "label": "start-seed17",
+    "at": "2026-10-02T06:47:09.122Z",
+    "snapshot": {
+      "phase": "playing",
+      "seed": 17,
+      "time": 0.15,
+      "roomIndex": 0,
+      "player": {
+        "maxHealth": 100,
+        "speed": 205,
+        "damage": 20,
+        "attackCooldown": 0.42,
+        "attackRange": 108,
+        "attackHalfAngle": 0.95,
+        "invulnerability": 0.85,
+        "x": 92,
+        "y": 300,
+        "radius": 15,
+        "health": 100,
+        "aimAngle": 0.17474462254399506,
+        "invulnerable": 0,
+        "damageFlash": 0,
+        "cooldown": 0,
+        "upgrades": []
+      },
+      "pendingReward": null,
+      "dungeon": {
+        "seed": 17,
+        "rooms": [
+          {
+            "index": 0,
+            "id": "room-0",
+            "kind": "start",
+            "name": "Quiet Threshold",
+            "layout": "sanctuary",
+            "obstacles": [],
+            "encounters": [],
+            "offers": [],
+            "previous": null,
+            "next": 1
+          },
+          {
+            "index": 1,
+            "id": "room-1",
+            "kind": "combat",
+            "name": "Ember Gallery",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-1-enemy-0",
+                "kind": "melee",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.7915809215512126
+              },
+              {
+                "id": "room-1-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.7691297261044383
+              },
+              {
+                "id": "room-1-enemy-2",
+                "kind": "ranged",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 1.0283654344268143
+              }
+            ],
+            "offers": [
+              "survival",
+              "cadence"
+            ],
+            "previous": 0,
+            "next": 2
+          },
+          {
+            "index": 2,
+            "id": "room-2",
+            "kind": "combat",
+            "name": "Sentinel Hall",
+            "layout": "split-hall",
+            "obstacles": [
+              {
+                "x": 450,
+                "y": 75,
+                "width": 60,
+                "height": 155
+              },
+              {
+                "x": 450,
+                "y": 370,
+                "width": 60,
+                "height": 155
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-2-enemy-0",
+                "kind": "elite",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 1.015173642616719
+              },
+              {
+                "id": "room-2-enemy-1",
+                "kind": "melee",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.9891679147724062
+              }
+            ],
+            "offers": [
+              "damage",
+              "movement"
+            ],
+            "previous": 1,
+            "next": 3
+          },
+          {
+            "index": 3,
+            "id": "room-3",
+            "kind": "combat",
+            "name": "Last Watch",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-3-enemy-0",
+                "kind": "elite",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 1.0309763363562525
+              },
+              {
+                "id": "room-3-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 1.0130545693915338
+              },
+              {
+                "id": "room-3-enemy-2",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 0.6776914913207293
+              }
+            ],
+            "offers": [
+              "movement",
+              "cadence"
+            ],
+            "previous": 2,
+            "next": 4
+          },
+          {
+            "index": 4,
+            "id": "room-4",
+            "kind": "boss",
+            "name": "Warden of the Gate",
+            "layout": "warden-arena",
+            "obstacles": [],
+            "offers": [],
+            "previous": 3,
+            "next": null,
+            "encounters": [
+              {
+                "id": "warden",
+                "kind": "boss",
+                "x": 700,
+                "y": 300,
+                "initialCooldown": 1.1
+              }
+            ]
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "index": 0,
+          "visited": true,
+          "cleared": true,
+          "rewardClaimed": true,
+          "enemies": [],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 1,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-1-enemy-0",
+              "kind": "melee",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.7915809215512126,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.7915809215512126,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.7691297261044383,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.7691297261044383,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-2",
+              "kind": "ranged",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 1.0283654344268143,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0283654344268143,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 2,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-2-enemy-0",
+              "kind": "elite",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 1.015173642616719,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.015173642616719,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-1",
+              "kind": "melee",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.9891679147724062,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.9891679147724062,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 3,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-3-enemy-0",
+              "kind": "elite",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 1.0309763363562525,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.0309763363562525,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 1.0130545693915338,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0130545693915338,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-2",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 0.6776914913207293,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.6776914913207293,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 4,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": true,
+          "enemies": [
+            {
+              "id": "warden",
+              "kind": "boss",
+              "x": 700,
+              "y": 300,
+              "initialCooldown": 1.1,
+              "health": 240,
+              "radius": 34,
+              "speed": 44,
+              "damage": 16,
+              "maxHealth": 240,
+              "state": "idle",
+              "cooldown": 1.1,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        }
+      ],
+      "effects": []
+    }
+  },
+  {
+    "label": "tap-KeyD",
+    "at": "2026-10-02T06:48:08.671Z",
+    "snapshot": {
+      "phase": "playing",
+      "seed": 17,
+      "time": 59.708333333330586,
+      "roomIndex": 0,
+      "player": {
+        "maxHealth": 100,
+        "speed": 205,
+        "damage": 20,
+        "attackCooldown": 0.42,
+        "attackRange": 108,
+        "attackHalfAngle": 0.95,
+        "invulnerability": 0.85,
+        "x": 92,
+        "y": 300,
+        "radius": 15,
+        "health": 100,
+        "aimAngle": 0.17474462254399506,
+        "invulnerable": 0,
+        "damageFlash": 0,
+        "cooldown": 0,
+        "upgrades": []
+      },
+      "pendingReward": null,
+      "dungeon": {
+        "seed": 17,
+        "rooms": [
+          {
+            "index": 0,
+            "id": "room-0",
+            "kind": "start",
+            "name": "Quiet Threshold",
+            "layout": "sanctuary",
+            "obstacles": [],
+            "encounters": [],
+            "offers": [],
+            "previous": null,
+            "next": 1
+          },
+          {
+            "index": 1,
+            "id": "room-1",
+            "kind": "combat",
+            "name": "Ember Gallery",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-1-enemy-0",
+                "kind": "melee",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.7915809215512126
+              },
+              {
+                "id": "room-1-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.7691297261044383
+              },
+              {
+                "id": "room-1-enemy-2",
+                "kind": "ranged",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 1.0283654344268143
+              }
+            ],
+            "offers": [
+              "survival",
+              "cadence"
+            ],
+            "previous": 0,
+            "next": 2
+          },
+          {
+            "index": 2,
+            "id": "room-2",
+            "kind": "combat",
+            "name": "Sentinel Hall",
+            "layout": "split-hall",
+            "obstacles": [
+              {
+                "x": 450,
+                "y": 75,
+                "width": 60,
+                "height": 155
+              },
+              {
+                "x": 450,
+                "y": 370,
+                "width": 60,
+                "height": 155
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-2-enemy-0",
+                "kind": "elite",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 1.015173642616719
+              },
+              {
+                "id": "room-2-enemy-1",
+                "kind": "melee",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.9891679147724062
+              }
+            ],
+            "offers": [
+              "damage",
+              "movement"
+            ],
+            "previous": 1,
+            "next": 3
+          },
+          {
+            "index": 3,
+            "id": "room-3",
+            "kind": "combat",
+            "name": "Last Watch",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-3-enemy-0",
+                "kind": "elite",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 1.0309763363562525
+              },
+              {
+                "id": "room-3-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 1.0130545693915338
+              },
+              {
+                "id": "room-3-enemy-2",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 0.6776914913207293
+              }
+            ],
+            "offers": [
+              "movement",
+              "cadence"
+            ],
+            "previous": 2,
+            "next": 4
+          },
+          {
+            "index": 4,
+            "id": "room-4",
+            "kind": "boss",
+            "name": "Warden of the Gate",
+            "layout": "warden-arena",
+            "obstacles": [],
+            "offers": [],
+            "previous": 3,
+            "next": null,
+            "encounters": [
+              {
+                "id": "warden",
+                "kind": "boss",
+                "x": 700,
+                "y": 300,
+                "initialCooldown": 1.1
+              }
+            ]
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "index": 0,
+          "visited": true,
+          "cleared": true,
+          "rewardClaimed": true,
+          "enemies": [],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 1,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-1-enemy-0",
+              "kind": "melee",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.7915809215512126,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.7915809215512126,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.7691297261044383,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.7691297261044383,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-2",
+              "kind": "ranged",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 1.0283654344268143,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0283654344268143,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 2,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-2-enemy-0",
+              "kind": "elite",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 1.015173642616719,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.015173642616719,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-1",
+              "kind": "melee",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.9891679147724062,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.9891679147724062,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 3,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-3-enemy-0",
+              "kind": "elite",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 1.0309763363562525,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.0309763363562525,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 1.0130545693915338,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0130545693915338,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-2",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 0.6776914913207293,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.6776914913207293,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 4,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": true,
+          "enemies": [
+            {
+              "id": "warden",
+              "kind": "boss",
+              "x": 700,
+              "y": 300,
+              "initialCooldown": 1.1,
+              "health": 240,
+              "radius": 34,
+              "speed": 44,
+              "damage": 16,
+              "maxHealth": 240,
+              "state": "idle",
+              "cooldown": 1.1,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        }
+      ],
+      "effects": []
+    }
+  },
+  {
+    "label": "locator-arrow-space-taps",
+    "at": "2026-10-02T06:49:56.326Z",
+    "snapshot": {
+      "phase": "playing",
+      "seed": 17,
+      "time": 167.35833333334546,
+      "roomIndex": 0,
+      "player": {
+        "maxHealth": 100,
+        "speed": 205,
+        "damage": 20,
+        "attackCooldown": 0.42,
+        "attackRange": 108,
+        "attackHalfAngle": 0.95,
+        "invulnerability": 0.85,
+        "x": 92,
+        "y": 300,
+        "radius": 15,
+        "health": 100,
+        "aimAngle": 0.17474462254399506,
+        "invulnerable": 0,
+        "damageFlash": 0,
+        "cooldown": 0,
+        "upgrades": []
+      },
+      "pendingReward": null,
+      "dungeon": {
+        "seed": 17,
+        "rooms": [
+          {
+            "index": 0,
+            "id": "room-0",
+            "kind": "start",
+            "name": "Quiet Threshold",
+            "layout": "sanctuary",
+            "obstacles": [],
+            "encounters": [],
+            "offers": [],
+            "previous": null,
+            "next": 1
+          },
+          {
+            "index": 1,
+            "id": "room-1",
+            "kind": "combat",
+            "name": "Ember Gallery",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-1-enemy-0",
+                "kind": "melee",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.7915809215512126
+              },
+              {
+                "id": "room-1-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.7691297261044383
+              },
+              {
+                "id": "room-1-enemy-2",
+                "kind": "ranged",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 1.0283654344268143
+              }
+            ],
+            "offers": [
+              "survival",
+              "cadence"
+            ],
+            "previous": 0,
+            "next": 2
+          },
+          {
+            "index": 2,
+            "id": "room-2",
+            "kind": "combat",
+            "name": "Sentinel Hall",
+            "layout": "split-hall",
+            "obstacles": [
+              {
+                "x": 450,
+                "y": 75,
+                "width": 60,
+                "height": 155
+              },
+              {
+                "x": 450,
+                "y": 370,
+                "width": 60,
+                "height": 155
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-2-enemy-0",
+                "kind": "elite",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 1.015173642616719
+              },
+              {
+                "id": "room-2-enemy-1",
+                "kind": "melee",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.9891679147724062
+              }
+            ],
+            "offers": [
+              "damage",
+              "movement"
+            ],
+            "previous": 1,
+            "next": 3
+          },
+          {
+            "index": 3,
+            "id": "room-3",
+            "kind": "combat",
+            "name": "Last Watch",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-3-enemy-0",
+                "kind": "elite",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 1.0309763363562525
+              },
+              {
+                "id": "room-3-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 1.0130545693915338
+              },
+              {
+                "id": "room-3-enemy-2",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 0.6776914913207293
+              }
+            ],
+            "offers": [
+              "movement",
+              "cadence"
+            ],
+            "previous": 2,
+            "next": 4
+          },
+          {
+            "index": 4,
+            "id": "room-4",
+            "kind": "boss",
+            "name": "Warden of the Gate",
+            "layout": "warden-arena",
+            "obstacles": [],
+            "offers": [],
+            "previous": 3,
+            "next": null,
+            "encounters": [
+              {
+                "id": "warden",
+                "kind": "boss",
+                "x": 700,
+                "y": 300,
+                "initialCooldown": 1.1
+              }
+            ]
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "index": 0,
+          "visited": true,
+          "cleared": true,
+          "rewardClaimed": true,
+          "enemies": [],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 1,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-1-enemy-0",
+              "kind": "melee",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.7915809215512126,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.7915809215512126,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.7691297261044383,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.7691297261044383,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-2",
+              "kind": "ranged",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 1.0283654344268143,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0283654344268143,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 2,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-2-enemy-0",
+              "kind": "elite",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 1.015173642616719,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.015173642616719,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-1",
+              "kind": "melee",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.9891679147724062,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.9891679147724062,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 3,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-3-enemy-0",
+              "kind": "elite",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 1.0309763363562525,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.0309763363562525,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 1.0130545693915338,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0130545693915338,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-2",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 0.6776914913207293,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.6776914913207293,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 4,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": true,
+          "enemies": [
+            {
+              "id": "warden",
+              "kind": "boss",
+              "x": 700,
+              "y": 300,
+              "initialCooldown": 1.1,
+              "health": 240,
+              "radius": 34,
+              "speed": 44,
+              "damage": 16,
+              "maxHealth": 240,
+              "state": "idle",
+              "cooldown": 1.1,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        }
+      ],
+      "effects": []
+    }
+  },
+  {
+    "label": "ordinary-primary-drag",
+    "at": "2026-10-02T06:51:55.499Z",
+    "snapshot": {
+      "phase": "playing",
+      "seed": 17,
+      "time": 286.53333333323707,
+      "roomIndex": 0,
+      "player": {
+        "maxHealth": 100,
+        "speed": 205,
+        "damage": 20,
+        "attackCooldown": 0.42,
+        "attackRange": 108,
+        "attackHalfAngle": 0.95,
+        "invulnerability": 0.85,
+        "x": 92,
+        "y": 300,
+        "radius": 15,
+        "health": 100,
+        "aimAngle": 0.0008982396543675511,
+        "invulnerable": 0,
+        "damageFlash": 0,
+        "cooldown": 0.16166666666666615,
+        "upgrades": []
+      },
+      "pendingReward": null,
+      "dungeon": {
+        "seed": 17,
+        "rooms": [
+          {
+            "index": 0,
+            "id": "room-0",
+            "kind": "start",
+            "name": "Quiet Threshold",
+            "layout": "sanctuary",
+            "obstacles": [],
+            "encounters": [],
+            "offers": [],
+            "previous": null,
+            "next": 1
+          },
+          {
+            "index": 1,
+            "id": "room-1",
+            "kind": "combat",
+            "name": "Ember Gallery",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-1-enemy-0",
+                "kind": "melee",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.7915809215512126
+              },
+              {
+                "id": "room-1-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.7691297261044383
+              },
+              {
+                "id": "room-1-enemy-2",
+                "kind": "ranged",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 1.0283654344268143
+              }
+            ],
+            "offers": [
+              "survival",
+              "cadence"
+            ],
+            "previous": 0,
+            "next": 2
+          },
+          {
+            "index": 2,
+            "id": "room-2",
+            "kind": "combat",
+            "name": "Sentinel Hall",
+            "layout": "split-hall",
+            "obstacles": [
+              {
+                "x": 450,
+                "y": 75,
+                "width": 60,
+                "height": 155
+              },
+              {
+                "x": 450,
+                "y": 370,
+                "width": 60,
+                "height": 155
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-2-enemy-0",
+                "kind": "elite",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 1.015173642616719
+              },
+              {
+                "id": "room-2-enemy-1",
+                "kind": "melee",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.9891679147724062
+              }
+            ],
+            "offers": [
+              "damage",
+              "movement"
+            ],
+            "previous": 1,
+            "next": 3
+          },
+          {
+            "index": 3,
+            "id": "room-3",
+            "kind": "combat",
+            "name": "Last Watch",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-3-enemy-0",
+                "kind": "elite",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 1.0309763363562525
+              },
+              {
+                "id": "room-3-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 1.0130545693915338
+              },
+              {
+                "id": "room-3-enemy-2",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 0.6776914913207293
+              }
+            ],
+            "offers": [
+              "movement",
+              "cadence"
+            ],
+            "previous": 2,
+            "next": 4
+          },
+          {
+            "index": 4,
+            "id": "room-4",
+            "kind": "boss",
+            "name": "Warden of the Gate",
+            "layout": "warden-arena",
+            "obstacles": [],
+            "offers": [],
+            "previous": 3,
+            "next": null,
+            "encounters": [
+              {
+                "id": "warden",
+                "kind": "boss",
+                "x": 700,
+                "y": 300,
+                "initialCooldown": 1.1
+              }
+            ]
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "index": 0,
+          "visited": true,
+          "cleared": true,
+          "rewardClaimed": true,
+          "enemies": [],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 1,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-1-enemy-0",
+              "kind": "melee",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.7915809215512126,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.7915809215512126,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.7691297261044383,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.7691297261044383,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-2",
+              "kind": "ranged",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 1.0283654344268143,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0283654344268143,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 2,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-2-enemy-0",
+              "kind": "elite",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 1.015173642616719,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.015173642616719,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-1",
+              "kind": "melee",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.9891679147724062,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.9891679147724062,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 3,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-3-enemy-0",
+              "kind": "elite",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 1.0309763363562525,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.0309763363562525,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 1.0130545693915338,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0130545693915338,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-2",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 0.6776914913207293,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.6776914913207293,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 4,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": true,
+          "enemies": [
+            {
+              "id": "warden",
+              "kind": "boss",
+              "x": 700,
+              "y": 300,
+              "initialCooldown": 1.1,
+              "health": 240,
+              "radius": 34,
+              "speed": 44,
+              "damage": 16,
+              "maxHealth": 240,
+              "state": "idle",
+              "cooldown": 1.1,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        }
+      ],
+      "effects": []
+    }
+  },
+  {
+    "label": "reload-seed17-repeat",
+    "at": "2026-10-02T06:53:19.585Z",
+    "snapshot": {
+      "phase": "menu",
+      "seed": 17,
+      "time": 0,
+      "roomIndex": 0,
+      "player": {
+        "maxHealth": 100,
+        "speed": 205,
+        "damage": 20,
+        "attackCooldown": 0.42,
+        "attackRange": 108,
+        "attackHalfAngle": 0.95,
+        "invulnerability": 0.85,
+        "x": 92,
+        "y": 300,
+        "radius": 15,
+        "health": 100,
+        "aimAngle": 0,
+        "invulnerable": 0,
+        "damageFlash": 0,
+        "cooldown": 0,
+        "upgrades": []
+      },
+      "pendingReward": null,
+      "dungeon": {
+        "seed": 17,
+        "rooms": [
+          {
+            "index": 0,
+            "id": "room-0",
+            "kind": "start",
+            "name": "Quiet Threshold",
+            "layout": "sanctuary",
+            "obstacles": [],
+            "encounters": [],
+            "offers": [],
+            "previous": null,
+            "next": 1
+          },
+          {
+            "index": 1,
+            "id": "room-1",
+            "kind": "combat",
+            "name": "Ember Gallery",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-1-enemy-0",
+                "kind": "melee",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.7915809215512126
+              },
+              {
+                "id": "room-1-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.7691297261044383
+              },
+              {
+                "id": "room-1-enemy-2",
+                "kind": "ranged",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 1.0283654344268143
+              }
+            ],
+            "offers": [
+              "survival",
+              "cadence"
+            ],
+            "previous": 0,
+            "next": 2
+          },
+          {
+            "index": 2,
+            "id": "room-2",
+            "kind": "combat",
+            "name": "Sentinel Hall",
+            "layout": "split-hall",
+            "obstacles": [
+              {
+                "x": 450,
+                "y": 75,
+                "width": 60,
+                "height": 155
+              },
+              {
+                "x": 450,
+                "y": 370,
+                "width": 60,
+                "height": 155
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-2-enemy-0",
+                "kind": "elite",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 1.015173642616719
+              },
+              {
+                "id": "room-2-enemy-1",
+                "kind": "melee",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.9891679147724062
+              }
+            ],
+            "offers": [
+              "damage",
+              "movement"
+            ],
+            "previous": 1,
+            "next": 3
+          },
+          {
+            "index": 3,
+            "id": "room-3",
+            "kind": "combat",
+            "name": "Last Watch",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-3-enemy-0",
+                "kind": "elite",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 1.0309763363562525
+              },
+              {
+                "id": "room-3-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 1.0130545693915338
+              },
+              {
+                "id": "room-3-enemy-2",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 0.6776914913207293
+              }
+            ],
+            "offers": [
+              "movement",
+              "cadence"
+            ],
+            "previous": 2,
+            "next": 4
+          },
+          {
+            "index": 4,
+            "id": "room-4",
+            "kind": "boss",
+            "name": "Warden of the Gate",
+            "layout": "warden-arena",
+            "obstacles": [],
+            "offers": [],
+            "previous": 3,
+            "next": null,
+            "encounters": [
+              {
+                "id": "warden",
+                "kind": "boss",
+                "x": 700,
+                "y": 300,
+                "initialCooldown": 1.1
+              }
+            ]
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "index": 0,
+          "visited": true,
+          "cleared": true,
+          "rewardClaimed": true,
+          "enemies": [],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 1,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-1-enemy-0",
+              "kind": "melee",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.7915809215512126,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.7915809215512126,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.7691297261044383,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.7691297261044383,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-2",
+              "kind": "ranged",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 1.0283654344268143,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0283654344268143,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 2,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-2-enemy-0",
+              "kind": "elite",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 1.015173642616719,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.015173642616719,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-1",
+              "kind": "melee",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.9891679147724062,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.9891679147724062,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 3,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-3-enemy-0",
+              "kind": "elite",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 1.0309763363562525,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.0309763363562525,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 1.0130545693915338,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0130545693915338,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-2",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 0.6776914913207293,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.6776914913207293,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 4,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": true,
+          "enemies": [
+            {
+              "id": "warden",
+              "kind": "boss",
+              "x": 700,
+              "y": 300,
+              "initialCooldown": 1.1,
+              "health": 240,
+              "radius": 34,
+              "speed": 44,
+              "damage": 16,
+              "maxHealth": 240,
+              "state": "idle",
+              "cooldown": 1.1,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        }
+      ],
+      "effects": []
+    }
+  },
+  {
+    "label": "load-seed42",
+    "at": "2026-10-02T06:53:19.761Z",
+    "snapshot": {
+      "phase": "menu",
+      "seed": 42,
+      "time": 0,
+      "roomIndex": 0,
+      "player": {
+        "maxHealth": 100,
+        "speed": 205,
+        "damage": 20,
+        "attackCooldown": 0.42,
+        "attackRange": 108,
+        "attackHalfAngle": 0.95,
+        "invulnerability": 0.85,
+        "x": 92,
+        "y": 300,
+        "radius": 15,
+        "health": 100,
+        "aimAngle": 0,
+        "invulnerable": 0,
+        "damageFlash": 0,
+        "cooldown": 0,
+        "upgrades": []
+      },
+      "pendingReward": null,
+      "dungeon": {
+        "seed": 42,
+        "rooms": [
+          {
+            "index": 0,
+            "id": "room-0",
+            "kind": "start",
+            "name": "Quiet Threshold",
+            "layout": "sanctuary",
+            "obstacles": [],
+            "encounters": [],
+            "offers": [],
+            "previous": null,
+            "next": 1
+          },
+          {
+            "index": 1,
+            "id": "room-1",
+            "kind": "combat",
+            "name": "Ember Gallery",
+            "layout": "barricades",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 120,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 418,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-1-enemy-0",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 1.0974425389897078
+              },
+              {
+                "id": "room-1-enemy-1",
+                "kind": "ranged",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.8342009080573917
+              },
+              {
+                "id": "room-1-enemy-2",
+                "kind": "ranged",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 0.768352302769199
+              }
+            ],
+            "offers": [
+              "damage",
+              "survival"
+            ],
+            "previous": 0,
+            "next": 2
+          },
+          {
+            "index": 2,
+            "id": "room-2",
+            "kind": "combat",
+            "name": "Sentinel Hall",
+            "layout": "split-hall",
+            "obstacles": [
+              {
+                "x": 450,
+                "y": 75,
+                "width": 60,
+                "height": 155
+              },
+              {
+                "x": 450,
+                "y": 370,
+                "width": 60,
+                "height": 155
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-2-enemy-0",
+                "kind": "elite",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 0.6807255597785116
+              },
+              {
+                "id": "room-2-enemy-1",
+                "kind": "melee",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 1.0053943943232297
+              },
+              {
+                "id": "room-2-enemy-2",
+                "kind": "ranged",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.6689227733761073
+              }
+            ],
+            "offers": [
+              "cadence",
+              "movement"
+            ],
+            "previous": 1,
+            "next": 3
+          },
+          {
+            "index": 3,
+            "id": "room-3",
+            "kind": "combat",
+            "name": "Last Watch",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-3-enemy-0",
+                "kind": "elite",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.7538031406700612
+              },
+              {
+                "id": "room-3-enemy-1",
+                "kind": "ranged",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 1.1556128751952202
+              },
+              {
+                "id": "room-3-enemy-2",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 0.9426439504139126
+              }
+            ],
+            "offers": [
+              "survival",
+              "cadence"
+            ],
+            "previous": 2,
+            "next": 4
+          },
+          {
+            "index": 4,
+            "id": "room-4",
+            "kind": "boss",
+            "name": "Warden of the Gate",
+            "layout": "warden-arena",
+            "obstacles": [],
+            "offers": [],
+            "previous": 3,
+            "next": null,
+            "encounters": [
+              {
+                "id": "warden",
+                "kind": "boss",
+                "x": 700,
+                "y": 300,
+                "initialCooldown": 1.1
+              }
+            ]
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "index": 0,
+          "visited": true,
+          "cleared": true,
+          "rewardClaimed": true,
+          "enemies": [],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 1,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-1-enemy-0",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 1.0974425389897078,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 1.0974425389897078,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-1",
+              "kind": "ranged",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.8342009080573917,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.8342009080573917,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-2",
+              "kind": "ranged",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 0.768352302769199,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.768352302769199,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 2,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-2-enemy-0",
+              "kind": "elite",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 0.6807255597785116,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 0.6807255597785116,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-1",
+              "kind": "melee",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 1.0053943943232297,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 1.0053943943232297,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-2",
+              "kind": "ranged",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.6689227733761073,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.6689227733761073,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 3,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-3-enemy-0",
+              "kind": "elite",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.7538031406700612,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 0.7538031406700612,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-1",
+              "kind": "ranged",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 1.1556128751952202,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.1556128751952202,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-2",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 0.9426439504139126,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.9426439504139126,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 4,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": true,
+          "enemies": [
+            {
+              "id": "warden",
+              "kind": "boss",
+              "x": 700,
+              "y": 300,
+              "initialCooldown": 1.1,
+              "health": 240,
+              "radius": 34,
+              "speed": 44,
+              "damage": 16,
+              "maxHealth": 240,
+              "state": "idle",
+              "cooldown": 1.1,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        }
+      ],
+      "effects": []
+    }
+  },
+  {
+    "label": "reload-seed42-repeat",
+    "at": "2026-10-02T06:54:59.618Z",
+    "snapshot": {
+      "phase": "menu",
+      "seed": 42,
+      "time": 0,
+      "roomIndex": 0,
+      "player": {
+        "maxHealth": 100,
+        "speed": 205,
+        "damage": 20,
+        "attackCooldown": 0.42,
+        "attackRange": 108,
+        "attackHalfAngle": 0.95,
+        "invulnerability": 0.85,
+        "x": 92,
+        "y": 300,
+        "radius": 15,
+        "health": 100,
+        "aimAngle": 0,
+        "invulnerable": 0,
+        "damageFlash": 0,
+        "cooldown": 0,
+        "upgrades": []
+      },
+      "pendingReward": null,
+      "dungeon": {
+        "seed": 42,
+        "rooms": [
+          {
+            "index": 0,
+            "id": "room-0",
+            "kind": "start",
+            "name": "Quiet Threshold",
+            "layout": "sanctuary",
+            "obstacles": [],
+            "encounters": [],
+            "offers": [],
+            "previous": null,
+            "next": 1
+          },
+          {
+            "index": 1,
+            "id": "room-1",
+            "kind": "combat",
+            "name": "Ember Gallery",
+            "layout": "barricades",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 120,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 418,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-1-enemy-0",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 1.0974425389897078
+              },
+              {
+                "id": "room-1-enemy-1",
+                "kind": "ranged",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.8342009080573917
+              },
+              {
+                "id": "room-1-enemy-2",
+                "kind": "ranged",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 0.768352302769199
+              }
+            ],
+            "offers": [
+              "damage",
+              "survival"
+            ],
+            "previous": 0,
+            "next": 2
+          },
+          {
+            "index": 2,
+            "id": "room-2",
+            "kind": "combat",
+            "name": "Sentinel Hall",
+            "layout": "split-hall",
+            "obstacles": [
+              {
+                "x": 450,
+                "y": 75,
+                "width": 60,
+                "height": 155
+              },
+              {
+                "x": 450,
+                "y": 370,
+                "width": 60,
+                "height": 155
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-2-enemy-0",
+                "kind": "elite",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 0.6807255597785116
+              },
+              {
+                "id": "room-2-enemy-1",
+                "kind": "melee",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 1.0053943943232297
+              },
+              {
+                "id": "room-2-enemy-2",
+                "kind": "ranged",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.6689227733761073
+              }
+            ],
+            "offers": [
+              "cadence",
+              "movement"
+            ],
+            "previous": 1,
+            "next": 3
+          },
+          {
+            "index": 3,
+            "id": "room-3",
+            "kind": "combat",
+            "name": "Last Watch",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-3-enemy-0",
+                "kind": "elite",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.7538031406700612
+              },
+              {
+                "id": "room-3-enemy-1",
+                "kind": "ranged",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 1.1556128751952202
+              },
+              {
+                "id": "room-3-enemy-2",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 0.9426439504139126
+              }
+            ],
+            "offers": [
+              "survival",
+              "cadence"
+            ],
+            "previous": 2,
+            "next": 4
+          },
+          {
+            "index": 4,
+            "id": "room-4",
+            "kind": "boss",
+            "name": "Warden of the Gate",
+            "layout": "warden-arena",
+            "obstacles": [],
+            "offers": [],
+            "previous": 3,
+            "next": null,
+            "encounters": [
+              {
+                "id": "warden",
+                "kind": "boss",
+                "x": 700,
+                "y": 300,
+                "initialCooldown": 1.1
+              }
+            ]
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "index": 0,
+          "visited": true,
+          "cleared": true,
+          "rewardClaimed": true,
+          "enemies": [],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 1,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-1-enemy-0",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 1.0974425389897078,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 1.0974425389897078,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-1",
+              "kind": "ranged",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.8342009080573917,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.8342009080573917,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-2",
+              "kind": "ranged",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 0.768352302769199,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.768352302769199,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 2,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-2-enemy-0",
+              "kind": "elite",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 0.6807255597785116,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 0.6807255597785116,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-1",
+              "kind": "melee",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 1.0053943943232297,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 1.0053943943232297,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-2",
+              "kind": "ranged",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.6689227733761073,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.6689227733761073,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 3,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-3-enemy-0",
+              "kind": "elite",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.7538031406700612,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 0.7538031406700612,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-1",
+              "kind": "ranged",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 1.1556128751952202,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.1556128751952202,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-2",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 0.9426439504139126,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.9426439504139126,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 4,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": true,
+          "enemies": [
+            {
+              "id": "warden",
+              "kind": "boss",
+              "x": 700,
+              "y": 300,
+              "initialCooldown": 1.1,
+              "health": 240,
+              "radius": 34,
+              "speed": 44,
+              "damage": 16,
+              "maxHealth": 240,
+              "state": "idle",
+              "cooldown": 1.1,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        }
+      ],
+      "effects": []
+    }
+  },
+  {
+    "label": "menu-seed-field-start17",
+    "at": "2026-10-02T06:55:44.698Z",
+    "snapshot": {
+      "phase": "playing",
+      "seed": 17,
+      "time": 0.14166666666666666,
+      "roomIndex": 0,
+      "player": {
+        "maxHealth": 100,
+        "speed": 205,
+        "damage": 20,
+        "attackCooldown": 0.42,
+        "attackRange": 108,
+        "attackHalfAngle": 0.95,
+        "invulnerability": 0.85,
+        "x": 92,
+        "y": 300,
+        "radius": 15,
+        "health": 100,
+        "aimAngle": 0.17474462254399506,
+        "invulnerable": 0,
+        "damageFlash": 0,
+        "cooldown": 0,
+        "upgrades": []
+      },
+      "pendingReward": null,
+      "dungeon": {
+        "seed": 17,
+        "rooms": [
+          {
+            "index": 0,
+            "id": "room-0",
+            "kind": "start",
+            "name": "Quiet Threshold",
+            "layout": "sanctuary",
+            "obstacles": [],
+            "encounters": [],
+            "offers": [],
+            "previous": null,
+            "next": 1
+          },
+          {
+            "index": 1,
+            "id": "room-1",
+            "kind": "combat",
+            "name": "Ember Gallery",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-1-enemy-0",
+                "kind": "melee",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 0.7915809215512126
+              },
+              {
+                "id": "room-1-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.7691297261044383
+              },
+              {
+                "id": "room-1-enemy-2",
+                "kind": "ranged",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 1.0283654344268143
+              }
+            ],
+            "offers": [
+              "survival",
+              "cadence"
+            ],
+            "previous": 0,
+            "next": 2
+          },
+          {
+            "index": 2,
+            "id": "room-2",
+            "kind": "combat",
+            "name": "Sentinel Hall",
+            "layout": "split-hall",
+            "obstacles": [
+              {
+                "x": 450,
+                "y": 75,
+                "width": 60,
+                "height": 155
+              },
+              {
+                "x": 450,
+                "y": 370,
+                "width": 60,
+                "height": 155
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-2-enemy-0",
+                "kind": "elite",
+                "x": 710,
+                "y": 160,
+                "initialCooldown": 1.015173642616719
+              },
+              {
+                "id": "room-2-enemy-1",
+                "kind": "melee",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 0.9891679147724062
+              }
+            ],
+            "offers": [
+              "damage",
+              "movement"
+            ],
+            "previous": 1,
+            "next": 3
+          },
+          {
+            "index": 3,
+            "id": "room-3",
+            "kind": "combat",
+            "name": "Last Watch",
+            "layout": "barricades-mirror",
+            "obstacles": [
+              {
+                "x": 315,
+                "y": 418,
+                "width": 185,
+                "height": 62
+              },
+              {
+                "x": 515,
+                "y": 120,
+                "width": 160,
+                "height": 62
+              }
+            ],
+            "encounters": [
+              {
+                "id": "room-3-enemy-0",
+                "kind": "elite",
+                "x": 770,
+                "y": 440,
+                "initialCooldown": 1.0309763363562525
+              },
+              {
+                "id": "room-3-enemy-1",
+                "kind": "ranged",
+                "x": 640,
+                "y": 300,
+                "initialCooldown": 1.0130545693915338
+              },
+              {
+                "id": "room-3-enemy-2",
+                "kind": "melee",
+                "x": 810,
+                "y": 290,
+                "initialCooldown": 0.6776914913207293
+              }
+            ],
+            "offers": [
+              "movement",
+              "cadence"
+            ],
+            "previous": 2,
+            "next": 4
+          },
+          {
+            "index": 4,
+            "id": "room-4",
+            "kind": "boss",
+            "name": "Warden of the Gate",
+            "layout": "warden-arena",
+            "obstacles": [],
+            "offers": [],
+            "previous": 3,
+            "next": null,
+            "encounters": [
+              {
+                "id": "warden",
+                "kind": "boss",
+                "x": 700,
+                "y": 300,
+                "initialCooldown": 1.1
+              }
+            ]
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "index": 0,
+          "visited": true,
+          "cleared": true,
+          "rewardClaimed": true,
+          "enemies": [],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 1,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-1-enemy-0",
+              "kind": "melee",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 0.7915809215512126,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.7915809215512126,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.7691297261044383,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 0.7691297261044383,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-1-enemy-2",
+              "kind": "ranged",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 1.0283654344268143,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0283654344268143,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 2,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-2-enemy-0",
+              "kind": "elite",
+              "x": 710,
+              "y": 160,
+              "initialCooldown": 1.015173642616719,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.015173642616719,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-2-enemy-1",
+              "kind": "melee",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 0.9891679147724062,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.9891679147724062,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 3,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": false,
+          "enemies": [
+            {
+              "id": "room-3-enemy-0",
+              "kind": "elite",
+              "x": 770,
+              "y": 440,
+              "initialCooldown": 1.0309763363562525,
+              "health": 70,
+              "radius": 21,
+              "speed": 64,
+              "damage": 15,
+              "maxHealth": 70,
+              "state": "idle",
+              "cooldown": 1.0309763363562525,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-1",
+              "kind": "ranged",
+              "x": 640,
+              "y": 300,
+              "initialCooldown": 1.0130545693915338,
+              "health": 30,
+              "radius": 15,
+              "speed": 50,
+              "damage": 10,
+              "maxHealth": 30,
+              "state": "idle",
+              "cooldown": 1.0130545693915338,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            },
+            {
+              "id": "room-3-enemy-2",
+              "kind": "melee",
+              "x": 810,
+              "y": 290,
+              "initialCooldown": 0.6776914913207293,
+              "health": 36,
+              "radius": 14,
+              "speed": 74,
+              "damage": 8,
+              "maxHealth": 36,
+              "state": "idle",
+              "cooldown": 0.6776914913207293,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        },
+        {
+          "index": 4,
+          "visited": false,
+          "cleared": false,
+          "rewardClaimed": true,
+          "enemies": [
+            {
+              "id": "warden",
+              "kind": "boss",
+              "x": 700,
+              "y": 300,
+              "initialCooldown": 1.1,
+              "health": 240,
+              "radius": 34,
+              "speed": 44,
+              "damage": 16,
+              "maxHealth": 240,
+              "state": "idle",
+              "cooldown": 1.1,
+              "attack": null,
+              "damageFlash": 0,
+              "path": [],
+              "pathTimer": 0,
+              "patternIndex": 0
+            }
+          ],
+          "projectiles": [],
+          "hazards": []
+        }
+      ],
+      "effects": []
+    }
+  }
+]

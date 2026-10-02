@@ -1,0 +1,21 @@
+Requested Chrome session/profile: 🧪 Solo Rerun
+Creation result: Browser is not available: chrome
+Available browser inventory: Codex MCP Apps; Codex In-app Browser
+Fallback: fresh Codex In-app Browser tab, automation session named 🧪 Solo Rerun
+Assigned port used: 8101
+
+Raw CDP Input.dispatchKeyEvent result:
+This method is not supported through raw CDP. Use tab.cua.type(...) or tab.cua.keypress(...) instead.
+
+Raw CDP Browser.getVersion result:
+This method is not supported through raw CDP.
+
+Supported input alternative:
+CUA pressKey key/chord tap series and coordinate mouse clicks.
+Real browser movement, aiming, attacks, fights, rewards, end states and resets were observed.
+No held-key API was available through the connected browser surface.
+
+Audio listening result:
+audio content omitted because you do not support audio input
+Actual browser output was captured through the playback monitor after start-gesture audio unlock.
+This does not establish that two distinct event cues were heard by the reviewer.

@@ -1,0 +1,845 @@
+--- /dev/null
++++ game/index.html
+@@ -0,0 +1,45 @@
++<!doctype html>
++<html lang="en">
++<head>
++  <meta charset="utf-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1">
++  <meta name="theme-color" content="#10191f">
++  <title>Dungeon Escape · The Last Gate</title>
++  <link rel="stylesheet" href="styles.css">
++</head>
++<body>
++  <main class="shell">
++    <header class="masthead">
++      <div class="brand"><span class="brand-mark" aria-hidden="true">◇</span><div><strong>DUNGEON ESCAPE</strong><span>THE LAST GATE</span></div></div>
++      <div class="header-actions"><span id="seed-label">SEED 17</span><button id="sound-toggle" class="quiet-button" type="button" aria-pressed="true">Sound on</button></div>
++    </header>
++    <section id="hud" class="hud" aria-label="Run status">
++      <div class="health-block"><div class="hud-caption"><span>VITALITY</span><strong id="health-text">100 / 100</strong></div><div class="health-track"><div id="health-fill"></div></div><span id="protection-label" class="subtle">Ready to escape</span></div>
++      <div class="room-block"><div class="hud-caption"><span id="room-progress">ROOM 1 / 5</span><strong id="room-status">SANCTUARY</strong></div><div id="room-name" class="room-name">Quiet Threshold</div><div id="route" class="route" aria-label="Dungeon route"></div></div>
++      <div class="stats-block"><span class="stat"><b id="damage-stat">20</b> DAMAGE</span><span class="stat"><b id="cadence-stat">0.42s</b> CADENCE</span><span class="stat"><b id="speed-stat">205</b> SPEED</span></div>
++    </section>
++    <div class="arena-wrap">
++      <canvas id="arena" width="960" height="600" tabindex="0" aria-label="Dungeon arena. Move with WASD or arrows. Aim with the mouse. Hold Space or the primary mouse button to attack."></canvas>
++      <div id="notice" class="notice" role="status" aria-live="polite"></div>
++      <section id="menu-screen" class="screen" aria-label="Main menu">
++        <div class="menu-panel">
++          <span class="eyebrow">A SHORT ROGUELITE ADVENTURE</span><h1>The last<br><em>gate awaits.</em></h1>
++          <p class="intro">Three chambers. One Warden.<br>Read the warnings, choose your strength, and escape.</p>
++          <form id="start-form"><label for="seed-input">DUNGEON SEED <span>0–4294967295</span></label><div class="seed-start"><input id="seed-input" name="seed" type="text" inputmode="numeric" pattern="[0-9]+" value="17" maxlength="10" required aria-describedby="seed-error"><button id="start-button" class="primary-button" type="submit">Enter the dungeon <span aria-hidden="true">→</span></button></div><p id="seed-error" class="field-error" aria-live="polite"></p></form>
++          <div class="controls"><div><kbd>W A S D</kbd><span>or arrow keys to move</span></div><div><kbd>MOUSE</kbd><span>to aim your blade</span></div><div><kbd>SPACE</kbd><span>or hold primary click to strike</span></div></div>
++          <p class="menu-footnote">Follow the east doors. Gold markings warn of danger.<br>Upgrades last for this run. Every fresh run resets your progress.</p>
++        </div>
++        <div class="menu-art" aria-hidden="true"><div class="gate-symbol">◇</div><span>READ · STRIKE · ESCAPE</span></div>
++      </section>
++      <section id="reward-screen" class="screen modal-screen" hidden aria-label="Upgrade selection">
++        <div class="choice-panel"><span class="eyebrow">CHAMBER CLEARED</span><h2>Choose your strength.</h2><p>Take one gift. Its effect stays with you until this run ends.</p><div id="reward-choices" class="reward-choices"></div><span class="subtle">The dungeon waits while you choose.</span></div>
++      </section>
++      <section id="end-screen" class="screen modal-screen" hidden aria-label="Run ended">
++        <div class="end-panel"><div id="end-symbol" class="end-symbol" aria-hidden="true">◇</div><span id="end-eyebrow" class="eyebrow">RUN ENDED</span><h2 id="end-title">Game Over</h2><p id="end-description"></p><div id="end-summary" class="end-summary"></div><div class="end-actions"><button id="restart-button" class="primary-button" type="button">Fresh run <span aria-hidden="true">↻</span></button><button id="menu-button" class="secondary-button" type="button">Main menu</button></div><span class="subtle">A fresh run resets health, upgrades, rooms, and enemies.</span></div>
++      </section>
++    </div>
++    <footer class="run-footer"><div id="upgrade-list" class="upgrade-list"><span class="subtle">No run upgrades yet</span></div><span class="footer-controls">WASD / ARROWS <i>move</i> · MOUSE <i>aim</i> · SPACE / CLICK <i>strike</i></span></footer>
++  </main>
++  <script type="module" src="main.mjs"></script>
++</body>
++</html>
+--- /dev/null
++++ game/styles.css
+@@ -0,0 +1,83 @@
++:root { color-scheme: dark; --ink:#e8e8dc; --muted:#8d9da5; --gold:#e6ba71; --teal:#79d1bf; --line:#2b3b43; --panel:#18242b; }
++* { box-sizing:border-box; }
++body { margin:0; background:#0c1318; color:var(--ink); font:14px/1.5 system-ui,sans-serif; min-height:100vh; background-image:radial-gradient(ellipse at 50% 0,#223139 0,transparent 65%); }
++button,input { font:inherit; }
++button { cursor:pointer; }
++button:focus-visible,input:focus-visible,canvas:focus-visible { outline:2px solid var(--teal); outline-offset:4px; }
++button { transition:background .15s,border-color .15s; }
++[hidden] { display:none !important; }
++.shell { width:min(1120px,calc(100% - 40px)); margin:0 auto; }
++.masthead { height:68px; display:flex; align-items:center; justify-content:space-between; }
++.brand { display:flex; align-items:center; gap:12px; }
++.brand-mark { font-size:43px; line-height:1; color:var(--gold); }
++.brand strong { display:block; font-size:13px; letter-spacing:.16em; }
++.brand div>span { display:block; font-size:10px; color:var(--muted); letter-spacing:.28em; }
++.header-actions { display:flex; align-items:center; gap:18px; font:10px/1.5 monospace; letter-spacing:.1em; color:var(--muted); }
++.quiet-button { background:transparent; border:1px solid var(--line); border-radius:4px; padding:7px 12px; color:var(--ink); font:11px system-ui; }
++.quiet-button:hover { border-color:var(--gold); }
++.hud { display:grid; grid-template-columns:1fr 1.2fr 1fr; gap:28px; padding:16px 20px; margin-bottom:12px; border:1px solid var(--line); border-radius:8px; background:#162129; }
++.hud-caption { display:flex; justify-content:space-between; gap:10px; font-size:10px; color:var(--muted); letter-spacing:.08em; }
++.hud-caption strong { color:var(--ink); font:11px monospace; }
++.health-track { height:7px; border-radius:9px; overflow:hidden; background:#304047; margin:8px 0 4px; }
++#health-fill { height:100%; width:100%; background:var(--teal); transition:width .12s; }
++#health-fill.low { background:#f48979; }
++.subtle { font-size:10px; color:var(--muted); }
++.room-name { font-size:14px; margin:2px 0 4px; font-weight:600; }
++.route { display:flex; gap:6px; }
++.route-node { width:24px; height:4px; border-radius:3px; background:#33464f; }
++.route-node.cleared { background:var(--teal); }
++.route-node.current { box-shadow:0 0 0 1px var(--gold); }
++.stats-block { display:flex; justify-content:space-between; align-items:center; gap:12px; }
++.stat { font-size:8px; color:var(--muted); letter-spacing:.08em; text-align:center; }
++.stat b { display:block; font:18px monospace; color:var(--ink); letter-spacing:0; }
++.arena-wrap { position:relative; width:min(100%,calc((100vh - 218px) * 1.6)); min-width:0; margin:auto; border:1px solid #3b4c52; border-radius:8px; overflow:hidden; box-shadow:0 22px 65px #0006; background:#141e24; }
++canvas { display:block; width:100%; aspect-ratio:8/5; cursor:crosshair; touch-action:none; }
++.screen { position:absolute; inset:0; background:linear-gradient(90deg,#101a23f5 0%,#101a23ed 48%,#101a2380 100%); display:flex; align-items:center; padding:clamp(20px,4vw,48px); }
++.menu-panel { width:65%; max-width:550px; z-index:1; }
++.eyebrow { color:var(--gold); font-size:10px; letter-spacing:.18em; font-weight:600; }
++h1 { font-family:Georgia,serif; font-size:clamp(28px,4.3vw,56px); line-height:1.08; letter-spacing:-.02em; font-weight:400; margin:13px 0; }
++h1 em { color:var(--gold); font-style:normal; }
++.intro { color:#b6c1c5; font-size:13px; margin:0 0 22px; line-height:1.6; }
++label { display:block; font-size:9px; letter-spacing:.12em; color:var(--muted); margin-bottom:7px; }
++label span { color:#60737f; margin-left:8px; font-family:monospace; letter-spacing:0; }
++.seed-start { display:flex; gap:8px; }
++input { width:125px; min-width:70px; background:#0d171e; border:1px solid #43565f; border-radius:5px; padding:11px; color:var(--ink); font-family:monospace; }
++.primary-button { background:var(--gold); border:1px solid var(--gold); color:#182129; padding:11px 17px; border-radius:5px; font-weight:700; font-size:12px; display:flex; justify-content:center; align-items:center; gap:18px; }
++.primary-button:hover { background:#f4cc87; border-color:#f4cc87; }
++.secondary-button { background:transparent; border:1px solid #526770; color:var(--ink); padding:11px 20px; border-radius:5px; font-size:12px; }
++.secondary-button:hover { background:#2e4049; }
++.field-error { color:#f48979; font-size:10px; min-height:15px; margin:3px 0 0; }
++.controls { display:grid; gap:6px; margin-top:7px; }
++.controls div { display:flex; align-items:center; gap:10px; font-size:11px; color:#c3ccd0; }
++kbd { min-width:60px; text-align:center; border:1px solid #45565e; border-bottom-width:2px; border-radius:3px; padding:2px 5px; font:9px monospace; color:var(--ink); background:#25333b; }
++.menu-footnote { font-size:10px; color:var(--muted); margin:16px 0 0; }
++.menu-art { flex:1; text-align:center; color:var(--gold); }
++.gate-symbol { font-size:170px; line-height:1; text-shadow:0 0 40px #e6ba712d; }
++.menu-art span { font-size:8px; letter-spacing:.19em; }
++.modal-screen { background:#0e1825db; justify-content:center; text-align:center; backdrop-filter:blur(3px); }
++.choice-panel { width:100%; max-width:720px; }
++h2 { font:normal 34px/1.1 Georgia,serif; margin:12px 0; }
++.choice-panel>p,.end-panel>p { font-size:12px; color:#b6c1c5; }
++.reward-choices { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:25px 0 16px; text-align:left; }
++.reward-card { display:flex; flex-direction:column; align-items:flex-start; gap:7px; background:#1c2b35; color:var(--ink); border:1px solid #52616a; border-radius:7px; padding:20px; min-height:180px; text-align:left; }
++.reward-card:hover { border-color:var(--gold); background:#273a43; }
++.reward-icon { font-size:27px; color:var(--gold); line-height:1; }
++.reward-card small { color:var(--muted); text-transform:uppercase; font-size:9px; letter-spacing:.14em; }
++.reward-card strong { font:22px Georgia,serif; }
++.reward-card p { margin:0; font-size:11px; color:#b5c2c7; }
++.reward-select { color:var(--gold); font-size:10px; margin-top:auto; }
++.end-panel { max-width:580px; }
++.end-symbol { color:var(--gold); font-size:56px; line-height:1; margin-bottom:12px; }
++.end-summary { font:11px monospace; color:var(--muted); margin:20px 0; }
++.end-actions { display:flex; justify-content:center; gap:10px; margin-bottom:16px; }
++.notice { position:absolute; z-index:2; top:18px; left:50%; transform:translateX(-50%); padding:8px 18px; border:1px solid #62715d; background:#1b2923ed; color:#d8e5c2; font-size:12px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .15s; }
++.notice.visible { opacity:1; }
++.run-footer { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:13px 2px; min-height:40px; }
++.upgrade-list { display:flex; flex-wrap:wrap; gap:6px; }
++.upgrade-chip { color:var(--gold); border:1px solid #4c4a3b; border-radius:3px; font-size:10px; padding:3px 7px; background:#28271f; }
++.footer-controls { font:9px monospace; color:#91a1a9; white-space:nowrap; }
++.footer-controls i { font:9px system-ui; color:#607681; }
++@media (max-height:750px) and (min-width:800px) { .masthead { height:52px; } .hud { padding:10px 16px; margin-bottom:8px; } .arena-wrap { width:min(100%,calc((100vh - 186px) * 1.6)); } .screen { padding:26px 36px; } h1 { font-size:40px; margin:9px 0; } .intro { margin-bottom:13px; font-size:11px; } .menu-footnote { margin-top:10px; } .controls { gap:4px; } .gate-symbol { font-size:135px; } }
++@media (max-width:800px) { .shell { width:calc(100% - 20px); } .hud { gap:12px; padding:12px; grid-template-columns:1fr 1fr; } .stats-block { grid-column:1/-1; justify-content:center; gap:35px; } .arena-wrap { width:100%; } .footer-controls { display:none; } .menu-art { display:none; } .menu-panel { width:100%; } h1 { font-size:34px; } .screen { padding:20px; } .intro { margin-bottom:12px; } .menu-footnote { display:none; } .controls { margin-top:3px; } }
++@media (max-width:520px) { .masthead { height:58px; } .brand strong { font-size:10px; } .brand div>span { font-size:8px; } .brand-mark { font-size:30px; } .header-actions { gap:8px; font-size:8px; } .quiet-button { padding:5px 7px; } .arena-wrap:has(.screen:not([hidden])) { min-height:410px; } .screen { padding:18px; } .reward-choices { gap:8px; margin:15px 0; } .reward-card { padding:12px; min-height:185px; } .reward-card strong { font-size:18px; } h2 { font-size:29px; } .notice { font-size:10px; padding:8px; } }
++@media (prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none !important; } }
+--- /dev/null
++++ game/input.mjs
+@@ -0,0 +1,59 @@
++const MOVEMENT_KEYS = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight']);
++
++export function pointerToWorld(event, bounds, world) {
++  if (!(bounds.width > 0 && bounds.height > 0)) return null;
++  const x = (event.clientX - bounds.left) * world.width / bounds.width;
++  const y = (event.clientY - bounds.top) * world.height / bounds.height;
++  return x >= 0 && x <= world.width && y >= 0 && y <= world.height ? { x, y } : null;
++}
++
++export function createInput(canvas, world, target = window) {
++  const keys = new Set();
++  let enabled = false;
++  let primaryHeld = false;
++  let pointer = null;
++  const listeners = [];
++  const listen = (element, name, handler) => {
++    element.addEventListener(name, handler);
++    listeners.push(() => element.removeEventListener(name, handler));
++  };
++  const clear = () => { keys.clear(); primaryHeld = false; };
++  const editable = element => element?.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(element?.tagName);
++  listen(target, 'keydown', event => {
++    if (!enabled || editable(event.target)) return;
++    if (MOVEMENT_KEYS.has(event.code) || event.code === 'Space') {
++      event.preventDefault(); keys.add(event.code);
++    }
++  });
++  listen(target, 'keyup', event => { keys.delete(event.code); });
++  listen(target, 'blur', clear);
++  listen(target, 'pointermove', event => {
++    if (event.pointerType && event.pointerType !== 'mouse') return;
++    const point = pointerToWorld(event, canvas.getBoundingClientRect(), world);
++    if (point) pointer = point;
++  });
++  listen(canvas, 'pointerdown', event => {
++    if (!enabled || event.button !== 0) return;
++    const point = pointerToWorld(event, canvas.getBoundingClientRect(), world);
++    if (!point) return;
++    pointer = point; primaryHeld = true; event.preventDefault(); canvas.focus({ preventScroll: true });
++  });
++  listen(target, 'pointerup', event => { if (event.button === 0) primaryHeld = false; });
++  listen(target, 'pointercancel', clear);
++  return {
++    clear,
++    setEnabled(value) { if (enabled !== value) clear(); enabled = value; },
++    sample() {
++      if (!enabled) return {};
++      const has = (a, b) => keys.has(a) || keys.has(b);
++      return {
++        moveX: Number(has('KeyD', 'ArrowRight')) - Number(has('KeyA', 'ArrowLeft')),
++        moveY: Number(has('KeyS', 'ArrowDown')) - Number(has('KeyW', 'ArrowUp')),
++        ...(pointer ? { aimX: pointer.x, aimY: pointer.y } : {}),
++        attack: keys.has('Space') || primaryHeld,
++      };
++    },
++    pointer() { return pointer ? { ...pointer } : null; },
++    destroy() { clear(); listeners.forEach(remove => remove()); },
++  };
++}
+--- /dev/null
++++ game/audio.mjs
+@@ -0,0 +1,50 @@
++export const EVENT_CUES = Object.freeze({
++  'run-started': 'start', 'player-attack': 'slash', 'player-damaged': 'hurt',
++  'enemy-defeated': 'defeat', 'enemy-attack': 'warning', 'room-cleared': 'clear',
++  'upgrade-selected': 'upgrade', 'game-over': 'loss', victory: 'win',
++});
++
++const TONES = Object.freeze({
++  start: [330, 660, 0.16, 'sine', 0.06], slash: [620, 190, 0.10, 'triangle', 0.045],
++  hurt: [105, 45, 0.24, 'sawtooth', 0.075], defeat: [390, 820, 0.16, 'sine', 0.04],
++  warning: [160, 220, 0.12, 'square', 0.022], clear: [440, 880, 0.30, 'sine', 0.05],
++  upgrade: [550, 1100, 0.32, 'triangle', 0.055], loss: [220, 55, 0.60, 'triangle', 0.08],
++  win: [440, 1320, 0.65, 'sine', 0.07],
++});
++
++export function createAudio(Context = globalThis.AudioContext || globalThis.webkitAudioContext) {
++  let context = null;
++  let muted = false;
++  let unavailable = !Context;
++  async function unlock() {
++    if (!Context) return false;
++    try {
++      context ||= new Context();
++      if (context.state === 'suspended') await context.resume();
++      return context.state === 'running';
++    } catch { unavailable = true; return false; }
++  }
++  function play(cue) {
++    if (muted || !context || context.state !== 'running' || !TONES[cue]) return false;
++    const [start, end, duration, type, volume] = TONES[cue];
++    const oscillator = context.createOscillator();
++    const gain = context.createGain();
++    const time = context.currentTime;
++    oscillator.type = type;
++    oscillator.frequency.setValueAtTime(start, time);
++    oscillator.frequency.exponentialRampToValueAtTime(end, time + duration);
++    gain.gain.setValueAtTime(0.0001, time);
++    gain.gain.exponentialRampToValueAtTime(volume, time + 0.008);
++    gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
++    oscillator.connect(gain); gain.connect(context.destination);
++    oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
++    oscillator.start(time); oscillator.stop(time + duration + 0.02);
++    return true;
++  }
++  return {
++    unlock,
++    consume(events) { for (const event of events) if (EVENT_CUES[event.type]) play(EVENT_CUES[event.type]); },
++    setMuted(value) { muted = Boolean(value); },
++    status() { return { muted, unlocked: context?.state === 'running', unavailable }; },
++  };
++}
+--- /dev/null
++++ game/renderer.mjs
+@@ -0,0 +1,234 @@
++import { currentRoom, isRoomLocked, WORLD } from './model.mjs';
++
++const COLORS = { ink: '#e8e8dc', gold: '#e6ba71', teal: '#79d1bf', red: '#ee887b', violet: '#b598df' };
++const TAU = Math.PI * 2;
++
++export function warningGeometry(enemy) {
++  const attack = enemy.attack;
++  if (!attack || enemy.state !== 'windup') return null;
++  return {
++    kind: attack.kind, x: attack.x, y: attack.y, angle: attack.angle,
++    targetX: attack.targetX, targetY: attack.targetY,
++    progress: Math.max(0, Math.min(1, 1 - attack.timer / attack.duration)),
++    radius: attack.radius ?? null, range: attack.range ?? null,
++    ...(attack.kind === 'fan' ? { angles: [-0.56, -0.28, 0, 0.28, 0.56].map(offset => attack.angle + offset) } : {}),
++  };
++}
++
++function circle(ctx, x, y, radius, fill, stroke = null, width = 1) {
++  ctx.beginPath(); ctx.arc(x, y, radius, 0, TAU);
++  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
++  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = width; ctx.stroke(); }
++}
++
++function polygon(ctx, x, y, radius, sides, angle, fill, stroke) {
++  ctx.beginPath();
++  for (let i = 0; i <= sides; i++) {
++    const a = angle + i * TAU / sides;
++    ctx.lineTo(x + Math.cos(a) * radius, y + Math.sin(a) * radius);
++  }
++  ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke();
++}
++
++function label(ctx, text, x, y, color = '#94a7af', size = 11, align = 'center') {
++  ctx.fillStyle = color; ctx.font = `${size}px system-ui`; ctx.textAlign = align; ctx.fillText(text, x, y);
++}
++
++function line(ctx, x, y, endX, endY, color, width = 2) {
++  ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(endX, endY);
++  ctx.strokeStyle = color; ctx.lineWidth = width; ctx.stroke();
++}
++
++function drawRoom(ctx, definition, locked, runtime) {
++  ctx.fillStyle = '#172229'; ctx.fillRect(0, 0, WORLD.width, WORLD.height);
++  for (let y = 30; y < 575; y += 48) for (let x = 30; x < 935; x += 48) {
++    ctx.fillStyle = (Math.floor(x / 48) + Math.floor(y / 48)) % 3 === 0 ? '#1b272e' : '#19252c';
++    ctx.fillRect(x, y, 46, 46);
++  }
++  ctx.strokeStyle = '#27383f'; ctx.lineWidth = 1;
++  ctx.strokeRect(48, 48, 864, 504);
++  circle(ctx, 480, 300, 137, null, '#29383c', 2);
++  circle(ctx, 480, 300, 129, null, '#233238', 1);
++  for (let i = 0; i < 8; i++) {
++    const angle = i * TAU / 8;
++    line(ctx, 480 + Math.cos(angle) * 132, 300 + Math.sin(angle) * 132,
++      480 + Math.cos(angle) * 143, 300 + Math.sin(angle) * 143, '#39413e', 2);
++  }
++  ctx.fillStyle = '#0c151b';
++  ctx.fillRect(0, 0, 960, 28); ctx.fillRect(0, 572, 960, 28);
++  ctx.fillRect(0, 0, 28, 600); ctx.fillRect(932, 0, 28, 600);
++  ctx.strokeStyle = '#445056'; ctx.lineWidth = 2; ctx.strokeRect(28, 28, 904, 544);
++  for (const x of [92, 868]) for (const y of [76, 524]) {
++    circle(ctx, x, y, 25, '#e6ba7109'); circle(ctx, x, y, 12, '#e6ba7115');
++    polygon(ctx, x, y, 5, 4, Math.PI / 4, COLORS.gold, '#e6ba71');
++  }
++  for (const [side, destination] of [['west', definition.previous], ['east', definition.next]]) {
++    if (destination === null) continue;
++    const x = side === 'east' ? 932 : 0;
++    ctx.fillStyle = locked ? '#392824' : '#2b4944'; ctx.fillRect(x, 236, 28, 128);
++    ctx.strokeStyle = locked ? '#cd7865' : COLORS.teal; ctx.lineWidth = 3;
++    ctx.strokeRect(x + 2, 238, 24, 124);
++    if (locked) for (let y = 249; y < 362; y += 19) line(ctx, x + 4, y, x + 24, y - 7, '#dc8f7b', 4);
++    else { label(ctx, side === 'east' ? '›' : '‹', x + 14, 313, COLORS.teal, 36); }
++    label(ctx, locked ? 'LOCKED' : side === 'east' ? 'ONWARD →' : '← RETURN', side === 'east' ? 876 : 85, 393,
++      locked ? '#dc8f7b' : COLORS.teal, 10);
++  }
++  for (const obstacle of definition.obstacles) {
++    ctx.fillStyle = '#080f1559'; ctx.fillRect(obstacle.x + 7, obstacle.y + 7, obstacle.width, obstacle.height);
++    ctx.fillStyle = '#304048'; ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
++    ctx.strokeStyle = '#536169'; ctx.lineWidth = 2; ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
++    ctx.fillStyle = '#3c4c53'; ctx.fillRect(obstacle.x + 4, obstacle.y + 4, obstacle.width - 8, 5);
++    for (let x = obstacle.x + 20; x < obstacle.x + obstacle.width; x += 34) line(ctx, x, obstacle.y + 11, x, obstacle.y + obstacle.height - 9, '#26363d');
++  }
++  if (definition.kind === 'start') {
++    label(ctx, 'QUIET THRESHOLD', 480, 260, '#9baea8', 18);
++    label(ctx, 'Follow the open east door to begin.', 480, 290, '#718c89', 13);
++    line(ctx, 417, 318, 543, 318, '#78b8a4', 2);
++    label(ctx, '→', 560, 327, COLORS.teal, 27);
++  } else if (runtime.cleared) label(ctx, 'CHAMBER CLEARED · EAST DOOR OPEN', 480, 544, COLORS.teal, 12);
++}
++
++function drawWarnings(ctx, runtime) {
++  for (const enemy of runtime.enemies) {
++    const warning = warningGeometry(enemy);
++    if (!warning || enemy.health <= 0 || warning.kind === 'nova') continue;
++    ctx.save(); ctx.setLineDash([7, 5]);
++    ctx.globalAlpha = 0.65 + warning.progress * 0.35;
++    if (warning.kind === 'melee') {
++      circle(ctx, warning.x, warning.y, warning.radius, '#e6ba7128', COLORS.gold, 2);
++      ctx.setLineDash([]); ctx.beginPath(); ctx.arc(warning.x, warning.y, warning.radius, -Math.PI / 2, -Math.PI / 2 + TAU * warning.progress);
++      ctx.lineWidth = 4; ctx.stroke();
++    } else if (warning.kind === 'fan') {
++      ctx.beginPath(); ctx.moveTo(warning.x, warning.y);
++      ctx.arc(warning.x, warning.y, 330, warning.angle - 0.56, warning.angle + 0.56);
++      ctx.closePath(); ctx.fillStyle = '#e6ba7113'; ctx.fill();
++      for (const angle of warning.angles) line(ctx, warning.x, warning.y,
++        warning.x + Math.cos(angle) * 390, warning.y + Math.sin(angle) * 390, COLORS.gold, 2);
++      label(ctx, 'BOLT FAN', warning.x, warning.y - 65, COLORS.gold, 12);
++    } else {
++      const range = warning.kind === 'charge' ? warning.range : 600;
++      const endX = warning.x + Math.cos(warning.angle) * range;
++      const endY = warning.y + Math.sin(warning.angle) * range;
++      if (warning.kind === 'charge') {
++        ctx.setLineDash([]); line(ctx, warning.x, warning.y, endX, endY, '#e6ba7128', (enemy.radius + 20) * 2);
++        ctx.setLineDash([7, 5]); label(ctx, 'CHARGE', warning.x, warning.y - 44, COLORS.gold, 11);
++      }
++      line(ctx, warning.x, warning.y, endX, endY, COLORS.gold, 2 + warning.progress * 2);
++      circle(ctx, warning.targetX, warning.targetY, 9, null, COLORS.gold, 1);
++    }
++    ctx.restore();
++  }
++  for (const hazard of runtime.hazards) {
++    const progress = 1 - Math.max(0, hazard.timer) / hazard.duration;
++    circle(ctx, hazard.x, hazard.y, hazard.radius, hazard.timer > 0 ? '#ee887b22' : '#ffb06055', hazard.timer > 0 ? COLORS.gold : COLORS.red, 3);
++    if (hazard.timer > 0) {
++      ctx.save(); ctx.beginPath(); ctx.arc(hazard.x, hazard.y, hazard.radius, 0, TAU); ctx.clip();
++      for (let x = hazard.x - 150; x < hazard.x + 150; x += 17) line(ctx, x, hazard.y - 100, x + 180, hazard.y + 100, '#e6ba7133', 2);
++      ctx.restore(); ctx.beginPath(); ctx.arc(hazard.x, hazard.y, hazard.radius - 5, -Math.PI / 2, -Math.PI / 2 + TAU * progress);
++      ctx.strokeStyle = COLORS.gold; ctx.lineWidth = 5; ctx.stroke();
++      label(ctx, 'MOVE', hazard.x, hazard.y + 5, COLORS.gold, 13);
++    }
++  }
++}
++
++function drawEnemy(ctx, enemy) {
++  if (enemy.health <= 0) return;
++  const { x, y, radius, kind } = enemy;
++  circle(ctx, x + 2, y + 5, radius + 1, '#050b1055');
++  const flashing = enemy.damageFlash > 0;
++  if (kind === 'melee') {
++    polygon(ctx, x, y, radius + 2, 3, -Math.PI / 2, flashing ? '#fff5d8' : '#a9524b', '#f6a58a');
++    line(ctx, x - 5, y + 2, x + 5, y + 2, '#291c25', 3);
++  } else if (kind === 'ranged') {
++    polygon(ctx, x, y, radius + 2, 4, 0, flashing ? '#fff5d8' : '#775b9e', COLORS.violet);
++    circle(ctx, x, y, 5, '#211c34', '#dfc4ff', 2);
++    ctx.beginPath(); ctx.arc(x, y, radius + 5, -1.1, 1.1); ctx.strokeStyle = COLORS.violet; ctx.lineWidth = 2; ctx.stroke();
++  } else if (kind === 'elite') {
++    polygon(ctx, x, y, radius + 2, 6, 0, flashing ? '#fff5d8' : '#805039', COLORS.gold);
++    polygon(ctx, x, y, radius - 7, 4, Math.PI / 4, '#3b2b30', '#e3a56c');
++    line(ctx, x - 13, y - 14, x - 21, y - 26, COLORS.gold, 4);
++    line(ctx, x + 13, y - 14, x + 21, y - 26, COLORS.gold, 4);
++    if (enemy.state === 'charging') line(ctx, x, y, x - Math.cos(enemy.attack.angle) * 52, y - Math.sin(enemy.attack.angle) * 52, '#efb26777', 12);
++  } else {
++    polygon(ctx, x, y, radius + 4, 6, -Math.PI / 2, flashing ? '#fff5d8' : '#69495c', '#daae90');
++    polygon(ctx, x, y + 2, radius - 11, 4, Math.PI / 4, '#29202e', COLORS.gold);
++    line(ctx, x - 22, y - 22, x - 33, y - 47, COLORS.gold, 5);
++    line(ctx, x + 22, y - 22, x + 33, y - 47, COLORS.gold, 5);
++    line(ctx, x - 9, y - 3, x + 9, y - 3, '#f1cfa1', 3);
++  }
++  const barWidth = kind === 'boss' ? 74 : kind === 'elite' ? 48 : 32;
++  const barY = y + radius + 10;
++  ctx.fillStyle = '#0a1116'; ctx.fillRect(x - barWidth / 2, barY, barWidth, 4);
++  ctx.fillStyle = COLORS.red; ctx.fillRect(x - barWidth / 2, barY, barWidth * enemy.health / enemy.maxHealth, 4);
++}
++
++function drawPlayer(ctx, player, time) {
++  if (player.health <= 0) return;
++  const { x, y, radius, aimAngle } = player;
++  circle(ctx, x, y + 5, radius + 3, '#050b1077');
++  if (player.invulnerable > 0) {
++    ctx.save(); ctx.setLineDash([5, 4]); circle(ctx, x, y, radius + 9, '#79d1bf12', '#a9ecdf', 2); ctx.restore();
++    ctx.globalAlpha = 0.65 + 0.35 * Math.abs(Math.sin(time * 22));
++  }
++  circle(ctx, x, y, radius, player.damageFlash > 0 ? '#ffb1a0' : '#417a73', COLORS.teal, 2);
++  polygon(ctx, x, y - 2, radius - 5, 3, aimAngle, '#e6ebe1', '#9bcec0');
++  const handX = x + Math.cos(aimAngle) * 14;
++  const handY = y + Math.sin(aimAngle) * 14;
++  line(ctx, handX, handY, x + Math.cos(aimAngle) * 36, y + Math.sin(aimAngle) * 36, '#e8e8dc', 3);
++  circle(ctx, handX, handY, 3, COLORS.gold);
++  ctx.globalAlpha = 1;
++}
++
++function drawEffects(ctx, effects) {
++  for (const effect of effects) {
++    const progress = 1 - effect.remaining / effect.duration;
++    ctx.save(); ctx.globalAlpha = Math.max(0.1, 1 - progress);
++    if (effect.kind === 'slash') {
++      ctx.beginPath(); ctx.moveTo(effect.x, effect.y); ctx.arc(effect.x, effect.y, effect.range, effect.angle - effect.halfAngle, effect.angle + effect.halfAngle); ctx.closePath();
++      ctx.fillStyle = '#abf2df24'; ctx.fill();
++      ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.range, effect.angle - effect.halfAngle, effect.angle + effect.halfAngle);
++      ctx.strokeStyle = '#d2fff0'; ctx.lineWidth = 6 * (1 - progress) + 1; ctx.stroke();
++    } else if (effect.kind.includes('defeat')) {
++      const radius = (effect.radius || 22) + progress * 45;
++      for (let i = 0; i < 10; i++) {
++        const a = i * TAU / 10;
++        line(ctx, effect.x + Math.cos(a) * radius * 0.5, effect.y + Math.sin(a) * radius * 0.5,
++          effect.x + Math.cos(a) * radius, effect.y + Math.sin(a) * radius, effect.kind === 'player-defeat' ? COLORS.red : COLORS.gold, 3);
++      }
++      circle(ctx, effect.x, effect.y, radius * 0.7, null, COLORS.ink, 2);
++    } else {
++      const radius = effect.radius || 14 + progress * 23;
++      const color = effect.kind === 'enemy-hit' ? COLORS.ink : COLORS.red;
++      circle(ctx, effect.x, effect.y, radius, effect.kind === 'nova-explosion' ? '#f5b47655' : null, color, 3);
++    }
++    ctx.restore();
++  }
++}
++
++export function renderGame(ctx, game, pointer = null) {
++  const { definition, runtime } = currentRoom(game);
++  ctx.save(); drawRoom(ctx, definition, isRoomLocked(game), runtime);
++  drawWarnings(ctx, runtime);
++  for (const projectile of runtime.projectiles) {
++    const angle = Math.atan2(projectile.vy, projectile.vx);
++    line(ctx, projectile.x, projectile.y, projectile.x - Math.cos(angle) * 17, projectile.y - Math.sin(angle) * 17, '#e6ba7177', 5);
++    circle(ctx, projectile.x, projectile.y, projectile.radius, COLORS.gold, '#fff4d9', 1);
++  }
++  for (const enemy of runtime.enemies) drawEnemy(ctx, enemy);
++  drawPlayer(ctx, game.player, game.time); drawEffects(ctx, game.effects);
++  if (pointer && game.phase === 'playing' && !game.pendingReward) {
++    circle(ctx, pointer.x, pointer.y, 6, null, '#c0ded399');
++    line(ctx, pointer.x - 10, pointer.y, pointer.x - 4, pointer.y, '#c0ded3', 1);
++    line(ctx, pointer.x + 4, pointer.y, pointer.x + 10, pointer.y, '#c0ded3', 1);
++  }
++  const boss = runtime.enemies.find(enemy => enemy.kind === 'boss' && enemy.health > 0);
++  if (boss) {
++    ctx.fillStyle = '#0c151bd9'; ctx.fillRect(290, 43, 380, 48);
++    label(ctx, 'WARDEN OF THE GATE', 480, 62, COLORS.gold, 12);
++    ctx.fillStyle = '#3f333c'; ctx.fillRect(308, 74, 344, 6);
++    ctx.fillStyle = '#d19382'; ctx.fillRect(308, 74, 344 * boss.health / boss.maxHealth, 6);
++    label(ctx, `${Math.ceil(boss.health)} / ${boss.maxHealth}`, 681, 79, COLORS.ink, 10, 'left');
++  }
++  if (game.player.damageFlash > 0) { ctx.strokeStyle = '#ef887b99'; ctx.lineWidth = 12; ctx.strokeRect(6, 6, 948, 588); }
++  ctx.restore();
++}
+--- /dev/null
++++ game/ui.mjs
+@@ -0,0 +1,114 @@
++import { currentRoom, isRoomLocked } from './model.mjs';
++import { UPGRADES } from './upgrades.mjs';
++
++const ICONS = { damage: '⚔', cadence: '↻', movement: '➶', survival: '♡' };
++export const screenKey = game => game.phase === 'playing' ? game.pendingReward ? 'reward' : 'playing' : game.phase;
++
++export function hudData(game) {
++  const { definition, runtime } = currentRoom(game);
++  const hostiles = runtime.enemies.filter(enemy => enemy.health > 0).length;
++  return {
++    seed: game.seed, health: game.player.health, maxHealth: game.player.maxHealth,
++    roomNumber: game.roomIndex + 1, roomTotal: game.dungeon.rooms.length,
++    name: definition.name, hostiles,
++    status: definition.kind === 'start' ? 'SANCTUARY · EXIT OPEN' : isRoomLocked(game)
++      ? `${hostiles} HOSTILE${hostiles === 1 ? '' : 'S'} · LOCKED` : 'CLEARED · EXITS OPEN',
++    protection: game.player.health === 0 ? 'Defeated' : game.player.damageFlash > 0 ? 'Hit! Briefly protected'
++      : game.player.invulnerable > 0 ? 'Protected · dashed shield' : 'Read gold warnings. Move to evade.',
++    damage: game.player.damage, cadence: game.player.attackCooldown.toFixed(2), speed: Math.round(game.player.speed),
++    upgrades: game.player.upgrades.map(id => UPGRADES[id]),
++  };
++}
++
++export function createUI(document, callbacks) {
++  const element = id => document.getElementById(id);
++  const text = (id, value) => { if (element(id).textContent !== String(value)) element(id).textContent = value; };
++  const panels = { menu: element('menu-screen'), reward: element('reward-screen'), 'game-over': element('end-screen'), victory: element('end-screen') };
++  let previousScreen = null;
++  let rewardSignature = '';
++  let upgradeSignature = '';
++  let routeSignature = '';
++  let noticeUntil = 0;
++  function buildRewards(game) {
++    const signature = `${game.pendingReward.roomIndex}:${game.pendingReward.offers.join(',')}`;
++    if (signature === rewardSignature) return;
++    rewardSignature = signature;
++    element('reward-choices').replaceChildren();
++    for (const id of game.pendingReward.offers) {
++      const upgrade = UPGRADES[id];
++      const button = document.createElement('button'); button.type = 'button'; button.className = 'reward-card'; button.dataset.upgrade = id;
++      for (const [tag, className, content] of [['span', 'reward-icon', ICONS[id]], ['small', '', upgrade.category], ['strong', '', upgrade.name], ['p', '', upgrade.description], ['span', 'reward-select', 'Take this gift →']]) {
++        const child = document.createElement(tag); child.className = className; child.textContent = content; button.append(child);
++      }
++      button.addEventListener('click', () => callbacks.chooseReward(id));
++      element('reward-choices').append(button);
++    }
++  }
++  function buildUpgrades(game, data) {
++    const signature = game.player.upgrades.join(',');
++    if (signature === upgradeSignature && element('upgrade-list').childElementCount) return;
++    upgradeSignature = signature; element('upgrade-list').replaceChildren();
++    if (!data.upgrades.length) {
++      const empty = document.createElement('span'); empty.className = 'subtle'; empty.textContent = 'No run upgrades yet'; element('upgrade-list').append(empty); return;
++    }
++    const counts = new Map();
++    data.upgrades.forEach(upgrade => counts.set(upgrade.id, (counts.get(upgrade.id) || 0) + 1));
++    for (const [id, count] of counts) {
++      const chip = document.createElement('span'); chip.className = 'upgrade-chip';
++      chip.textContent = `${ICONS[id]} ${UPGRADES[id].name}${count > 1 ? ` ×${count}` : ''}`;
++      chip.title = UPGRADES[id].description; element('upgrade-list').append(chip);
++    }
++  }
++  function buildRoute(game) {
++    const signature = `${game.roomIndex}:${game.rooms.map(room => Number(room.cleared)).join('')}`;
++    if (signature === routeSignature) return;
++    routeSignature = signature; element('route').replaceChildren();
++    game.dungeon.rooms.forEach((room, index) => {
++      const node = document.createElement('span'); node.className = `route-node${game.rooms[index].cleared ? ' cleared' : ''}${index === game.roomIndex ? ' current' : ''}`;
++      node.title = `${index + 1}. ${room.name}${game.rooms[index].cleared ? ' · cleared' : ''}`;
++      node.setAttribute('aria-label', node.title); element('route').append(node);
++    });
++  }
++  function consumeNotices(events, game, now) {
++    if (screenKey(game) !== 'playing') { element('notice').classList.remove('visible'); return; }
++    for (const event of events) {
++      let message = '';
++      if (event.type === 'door-blocked') message = 'Door locked · defeat every hostile to open it';
++      if (event.type === 'room-entered') message = `Room ${game.roomIndex + 1} · ${currentRoom(game).definition.name}`;
++      if (event.type === 'upgrade-selected') message = `${UPGRADES[event.id].name} acquired · effect applied`;
++      if (event.type === 'run-started') message = 'Follow the east door → Aim with the mouse';
++      if (message) { text('notice', message); noticeUntil = now + 2200; }
++    }
++    element('notice').classList.toggle('visible', now < noticeUntil);
++  }
++  return {
++    update(game, events = [], now = 0) {
++      const data = hudData(game); const screen = screenKey(game);
++      text('seed-label', `SEED ${data.seed}`); text('health-text', `${Math.ceil(data.health)} / ${data.maxHealth}`);
++      element('health-fill').style.width = `${100 * data.health / data.maxHealth}%`;
++      element('health-fill').classList.toggle('low', data.health / data.maxHealth < 0.3);
++      text('protection-label', data.protection); text('room-progress', `ROOM ${data.roomNumber} / ${data.roomTotal}`);
++      text('room-status', data.status); text('room-name', data.name);
++      text('damage-stat', data.damage); text('cadence-stat', `${data.cadence}s`); text('speed-stat', data.speed);
++      buildUpgrades(game, data); buildRoute(game);
++      if (screen === 'reward') buildRewards(game);
++      if (screen !== previousScreen) {
++        new Set(Object.values(panels)).forEach(panel => { panel.hidden = true; });
++        if (panels[screen]) panels[screen].hidden = false;
++        if (screen === 'menu') { element('seed-input').value = String(game.seed); element('start-button').focus({ preventScroll: true }); }
++        if (screen === 'reward') element('reward-choices').firstElementChild?.focus({ preventScroll: true });
++        if (screen === 'game-over' || screen === 'victory') {
++          const won = screen === 'victory';
++          text('end-symbol', won ? '◇' : '✕'); text('end-eyebrow', won ? 'THE WARDEN HAS FALLEN' : 'THE DUNGEON REMAINS');
++          text('end-title', won ? 'Victory' : 'Game Over');
++          text('end-description', won ? 'The last gate opens. You escaped the dungeon.' : 'Your blade falls silent. Read the next warning and try again.');
++          text('end-summary', `SEED ${game.seed} · ${data.roomNumber} / ${data.roomTotal} ROOMS · ${game.player.upgrades.length} GIFTS · ${Math.floor(game.time)}s`);
++          element('restart-button').focus({ preventScroll: true });
++        }
++        if (screen === 'playing') element('arena').focus({ preventScroll: true });
++        previousScreen = screen;
++      }
++      consumeNotices(events, game, now);
++    },
++  };
++}
+--- /dev/null
++++ game/presentation.mjs
+@@ -0,0 +1,21 @@
++import { updateGame, drainEvents } from './model.mjs';
++import { screenKey } from './ui.mjs';
++
++export function createFrameDriver(game, { input, audio, ui, render }) {
++  let previousScreen = screenKey(game);
++  return (elapsed, now) => {
++    const before = screenKey(game);
++    if (before !== previousScreen) input.clear();
++    input.setEnabled(before === 'playing');
++    updateGame(game, elapsed, input.sample());
++    const after = screenKey(game);
++    if (after !== before) input.clear();
++    input.setEnabled(after === 'playing');
++    const events = drainEvents(game);
++    audio.consume(events);
++    ui.update(game, events, now);
++    render(game, input.pointer());
++    previousScreen = after;
++    return events;
++  };
++}
+--- /dev/null
++++ game/main.mjs
+@@ -0,0 +1,80 @@
++import { createGame, startRun, returnToMenu, chooseReward, WORLD } from './model.mjs';
++import { parseSeed } from './rng.mjs';
++import { createInput } from './input.mjs';
++import { createAudio } from './audio.mjs';
++import { renderGame } from './renderer.mjs';
++import { createUI } from './ui.mjs';
++import { createFrameDriver } from './presentation.mjs';
++
++const seed = parseSeed(new URLSearchParams(window.location.search).get('seed'));
++const game = createGame({ seed });
++const canvas = document.getElementById('arena');
++const context = canvas.getContext('2d');
++const input = createInput(canvas, WORLD);
++const audio = createAudio();
++const seedInput = document.getElementById('seed-input');
++const seedError = document.getElementById('seed-error');
++const soundButton = document.getElementById('sound-toggle');
++let muted = false;
++let previousFrame = null;
++let deviceScale = 0;
++seedInput.value = String(seed);
++
++function resizeCanvas() {
++  const scale = Math.min(2, window.devicePixelRatio || 1);
++  if (deviceScale === scale) return;
++  deviceScale = scale;
++  canvas.width = Math.round(WORLD.width * scale);
++  canvas.height = Math.round(WORLD.height * scale);
++  context.setTransform(scale, 0, 0, scale, 0, 0);
++}
++
++const ui = createUI(document, {
++  chooseReward(id) { input.clear(); chooseReward(game, id); void audio.unlock(); },
++});
++const frame = createFrameDriver(game, { input, audio, ui, render: (state, pointer) => renderGame(context, state, pointer) });
++
++document.getElementById('start-form').addEventListener('submit', async event => {
++  event.preventDefault();
++  if (!/^\d+$/.test(seedInput.value) || Number(seedInput.value) > 0xffffffff) {
++    seedError.textContent = 'Enter a whole number from 0 to 4294967295.'; seedInput.focus(); return;
++  }
++  seedError.textContent = '';
++  await audio.unlock(); input.clear(); startRun(game, parseSeed(seedInput.value));
++  const url = new URL(window.location.href); url.searchParams.set('seed', String(game.seed));
++  window.history.replaceState(null, '', url);
++  previousFrame = null;
++});
++seedInput.addEventListener('input', () => { seedError.textContent = ''; });
++document.getElementById('restart-button').addEventListener('click', async () => {
++  await audio.unlock(); input.clear(); startRun(game, game.seed); previousFrame = null;
++});
++document.getElementById('menu-button').addEventListener('click', () => {
++  input.clear(); returnToMenu(game); seedError.textContent = '';
++});
++soundButton.addEventListener('click', async () => {
++  muted = !muted; audio.setMuted(muted);
++  if (!muted) await audio.unlock();
++  soundButton.textContent = audio.status().unavailable ? 'Sound unavailable' : muted ? 'Sound off' : 'Sound on';
++  soundButton.setAttribute('aria-pressed', String(!muted));
++  if (game.phase === 'playing' && !game.pendingReward) canvas.focus({ preventScroll: true });
++});
++window.addEventListener('pointerdown', () => { void audio.unlock(); });
++window.addEventListener('keydown', () => { void audio.unlock(); });
++document.addEventListener('visibilitychange', () => { if (document.hidden) { input.clear(); previousFrame = null; } });
++
++// An isolated copy for inspection. It cannot issue commands or alter live state.
++window.dungeonSnapshot = () => structuredClone({
++  phase: game.phase, seed: game.seed, time: game.time, roomIndex: game.roomIndex,
++  player: game.player, pendingReward: game.pendingReward, dungeon: game.dungeon,
++  rooms: game.rooms, effects: game.effects,
++});
++
++function animate(now) {
++  resizeCanvas();
++  const elapsed = previousFrame === null ? 0 : (now - previousFrame) / 1000;
++  previousFrame = now;
++  frame(elapsed, now);
++  requestAnimationFrame(animate);
++}
++requestAnimationFrame(animate);
+--- /dev/null
++++ game/tests/presentation.test.mjs
+@@ -0,0 +1,132 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { createInput, pointerToWorld } from '../input.mjs';
++import { createAudio } from '../audio.mjs';
++import { createFrameDriver } from '../presentation.mjs';
++import { warningGeometry, renderGame } from '../renderer.mjs';
++import { createGame, startRun, WORLD } from '../model.mjs';
++import { hudData } from '../ui.mjs';
++
++class Surface {
++  listeners = new Map();
++  focused = false;
++  addEventListener(name, callback) { if (!this.listeners.has(name)) this.listeners.set(name, new Set()); this.listeners.get(name).add(callback); }
++  removeEventListener(name, callback) { this.listeners.get(name)?.delete(callback); }
++  dispatch(name, details = {}) {
++    const event = { target: this, preventDefault() { this.prevented = true; }, ...details };
++    this.listeners.get(name)?.forEach(callback => callback(event)); return event;
++  }
++  getBoundingClientRect() { return { left: 30, top: 50, width: 480, height: 300 }; }
++  focus() { this.focused = true; }
++}
++
++function inputFixture() {
++  const target = new Surface(); const canvas = new Surface();
++  return { target, canvas, input: createInput(canvas, WORLD, target) };
++}
++
++test('pointer coordinates scale from the displayed canvas and reject outside positions', () => {
++  const bounds = { left: 30, top: 50, width: 480, height: 300 };
++  assert.deepEqual(pointerToWorld({ clientX: 270, clientY: 200 }, bounds, WORLD), { x: 480, y: 300 });
++  assert.equal(pointerToWorld({ clientX: 29, clientY: 200 }, bounds, WORLD), null);
++  assert.equal(pointerToWorld({ clientX: 270, clientY: 200 }, { ...bounds, width: 0 }, WORLD), null);
++});
++
++test('WASD and arrows share model inputs; Space and primary click hold and release attacks', () => {
++  const { target, canvas, input } = inputFixture(); input.setEnabled(true);
++  target.dispatch('keydown', { code: 'KeyD' }); target.dispatch('keydown', { code: 'ArrowUp' });
++  target.dispatch('keydown', { code: 'Space' });
++  assert.deepEqual(input.sample(), { moveX: 1, moveY: -1, attack: true });
++  target.dispatch('keyup', { code: 'Space' }); assert.equal(input.sample().attack, false);
++  canvas.dispatch('pointerdown', { button: 0, clientX: 270, clientY: 200 });
++  assert.equal(input.sample().attack, true); assert.equal(input.sample().aimX, 480); assert.equal(canvas.focused, true);
++  target.dispatch('pointerup', { button: 0 }); assert.equal(input.sample().attack, false);
++  target.dispatch('keyup', { code: 'KeyD' }); target.dispatch('keyup', { code: 'ArrowUp' });
++  assert.equal(input.sample().moveX, 0); assert.equal(input.sample().moveY, 0);
++  input.destroy();
++});
++
++test('blur, pointer cancellation, and screen disable clear held input; form controls retain keys', () => {
++  const { target, canvas, input } = inputFixture(); input.setEnabled(true);
++  for (const release of ['blur', 'pointercancel']) {
++    target.dispatch('keydown', { code: 'KeyW' }); canvas.dispatch('pointerdown', { button: 0, clientX: 270, clientY: 200 });
++    target.dispatch(release); assert.equal(input.sample().moveY, 0); assert.equal(input.sample().attack, false);
++  }
++  target.dispatch('keydown', { code: 'Space' }); input.setEnabled(false); assert.deepEqual(input.sample(), {});
++  input.setEnabled(true); assert.equal(input.sample().attack, false);
++  const event = target.dispatch('keydown', { code: 'KeyW', target: { tagName: 'INPUT' } });
++  assert.equal(event.prevented, undefined); assert.equal(input.sample().moveY, 0);
++  input.destroy();
++});
++
++test('real model normalization also applies to keyboard input sampled by the presentation', () => {
++  function distance(diagonal) {
++    const game = createGame(); startRun(game); const { target, input } = inputFixture(); input.setEnabled(true);
++    target.dispatch('keydown', { code: 'KeyD' }); if (diagonal) target.dispatch('keydown', { code: 'KeyS' });
++    const start = { x: game.player.x, y: game.player.y };
++    const drive = createFrameDriver(game, { input, audio: { consume() {} }, ui: { update() {} }, render() {} });
++    drive(0.2, 200); input.destroy(); return Math.hypot(game.player.x - start.x, game.player.y - start.y);
++  }
++  assert.ok(Math.abs(distance(false) - distance(true)) < 1e-8);
++});
++
++test('frame driver drains each queued event once and releases state on a screen transition', () => {
++  const game = createGame(); const { input, target } = inputFixture(); const consumed = [];
++  const drive = createFrameDriver(game, { input, audio: { consume(events) { consumed.push(...events); } }, ui: { update() {} }, render() {} });
++  drive(0, 0); startRun(game); drive(0, 10); drive(0, 20);
++  assert.deepEqual(consumed.map(event => event.type), ['run-started']); assert.equal(game.events.length, 0);
++  target.dispatch('keydown', { code: 'Space' });
++  game.phase = 'game-over'; drive(0, 30); startRun(game); drive(0, 40);
++  assert.equal(input.sample().attack, false); input.destroy();
++});
++
++test('HUD reads live health, effects, hostile locks, and distinct protection states', () => {
++  const game = createGame(); startRun(game);
++  assert.equal(hudData(game).status, 'SANCTUARY · EXIT OPEN');
++  game.roomIndex = 1; game.player.invulnerable = 0.5; assert.match(hudData(game).status, /HOSTILES · LOCKED/);
++  assert.match(hudData(game).protection, /Protected/);
++  game.player.damageFlash = 0.1; assert.match(hudData(game).protection, /Hit!/);
++  game.player.health = 0; assert.equal(hudData(game).protection, 'Defeated');
++});
++
++test('warning extraction preserves fixed targets, actual ranges, and five boss fan directions', () => {
++  const enemy = { state: 'windup', attack: { kind: 'charge', x: 500, y: 300, angle: 0.2, targetX: 250, targetY: 200, range: 221, timer: 0.5, duration: 1 } };
++  const warning = warningGeometry(enemy);
++  assert.equal(warning.range, 221); assert.equal(warning.progress, 0.5); assert.equal(warning.targetX, 250);
++  assert.equal(enemy.attack.timer, 0.5);
++  enemy.attack.kind = 'fan'; const fan = warningGeometry(enemy);
++  assert.equal(fan.angles.length, 5); assert.equal(fan.angles[2], 0.2);
++  enemy.state = 'idle'; assert.equal(warningGeometry(enemy), null);
++});
++
++test('renderer draws actual nova circles and all archetype/effect fixtures without altering state', () => {
++  const game = createGame(); startRun(game); game.roomIndex = 4;
++  const runtime = game.rooms[4];
++  runtime.hazards.push({ x: 115, y: 490, radius: 78, timer: 0.6, duration: 1.25, active: 0.3 });
++  game.effects.push({ kind: 'slash', x: 92, y: 300, angle: 0, range: 108, halfAngle: 0.95, remaining: 0.1, duration: 0.16 });
++  const arcs = [];
++  const ctx = new Proxy({ arc(...args) { arcs.push(args); } }, { get(object, property) { return property in object ? object[property] : () => {}; }, set(object, property, value) { object[property] = value; return true; } });
++  const before = structuredClone(game); renderGame(ctx, game, { x: 200, y: 300 });
++  assert.ok(arcs.some(([x, y, radius]) => x === 115 && y === 490 && radius === 78));
++  assert.deepEqual(game, before);
++  for (const kind of ['melee', 'ranged', 'elite', 'boss']) {
++    runtime.enemies[0].kind = kind; renderGame(ctx, game);
++  }
++});
++
++test('audio waits for a gesture unlock, maps attack/damage to distinct tones, and honors mute', async () => {
++  const tones = [];
++  class Context {
++    state = 'suspended'; currentTime = 10; destination = {};
++    async resume() { this.state = 'running'; }
++    createOscillator() { const tone = { frequency: [], type: null }; tones.push(tone); return {
++      set type(value) { tone.type = value; }, frequency: { setValueAtTime(value) { tone.frequency.push(value); }, exponentialRampToValueAtTime(value) { tone.frequency.push(value); } },
++      connect() {}, disconnect() {}, start() {}, stop() {},
++    }; }
++    createGain() { return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, disconnect() {} }; }
++  }
++  const audio = createAudio(Context); audio.consume([{ type: 'player-attack' }]); assert.equal(tones.length, 0);
++  assert.equal(await audio.unlock(), true); audio.consume([{ type: 'player-attack' }, { type: 'player-damaged' }, { type: 'room-entered' }]);
++  assert.equal(tones.length, 2); assert.notDeepEqual(tones[0], tones[1]);
++  audio.setMuted(true); audio.consume([{ type: 'player-attack' }]); assert.equal(tones.length, 2);
++});

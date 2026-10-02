@@ -1,0 +1,341 @@
+[
+  {
+    "seed": 17,
+    "repeatedIdentically": true,
+    "hashes": {
+      "layouts": "390164312c9babd10fb1986164eff8754f74ab5e7b98cb6bd4da02d533b3bb3a",
+      "encounters": "9924b6f3a1361c6e2924f27404e0b199011f434ebd84467ba67f2a73e8fdc8e8",
+      "offers": "854e2b5ace6edecced09d7ef5466a7cbde9a116e98200bcdf4ac7a0d85594187"
+    },
+    "rooms": [
+      {
+        "index": 0,
+        "kind": "start",
+        "layout": "sanctuary",
+        "obstacles": [],
+        "encounters": [],
+        "offers": []
+      },
+      {
+        "index": 1,
+        "kind": "combat",
+        "layout": "barricades-mirror",
+        "obstacles": [
+          {
+            "x": 315,
+            "y": 418,
+            "width": 185,
+            "height": 62
+          },
+          {
+            "x": 515,
+            "y": 120,
+            "width": 160,
+            "height": 62
+          }
+        ],
+        "encounters": [
+          {
+            "id": "room-1-enemy-0",
+            "kind": "melee",
+            "x": 710,
+            "y": 160,
+            "initialCooldown": 0.7915809215512126
+          },
+          {
+            "id": "room-1-enemy-1",
+            "kind": "ranged",
+            "x": 640,
+            "y": 300,
+            "initialCooldown": 0.7691297261044383
+          },
+          {
+            "id": "room-1-enemy-2",
+            "kind": "ranged",
+            "x": 810,
+            "y": 290,
+            "initialCooldown": 1.0283654344268143
+          }
+        ],
+        "offers": [
+          "survival",
+          "cadence"
+        ]
+      },
+      {
+        "index": 2,
+        "kind": "combat",
+        "layout": "split-hall",
+        "obstacles": [
+          {
+            "x": 450,
+            "y": 75,
+            "width": 60,
+            "height": 155
+          },
+          {
+            "x": 450,
+            "y": 370,
+            "width": 60,
+            "height": 155
+          }
+        ],
+        "encounters": [
+          {
+            "id": "room-2-enemy-0",
+            "kind": "elite",
+            "x": 710,
+            "y": 160,
+            "initialCooldown": 1.015173642616719
+          },
+          {
+            "id": "room-2-enemy-1",
+            "kind": "melee",
+            "x": 640,
+            "y": 300,
+            "initialCooldown": 0.9891679147724062
+          }
+        ],
+        "offers": [
+          "damage",
+          "movement"
+        ]
+      },
+      {
+        "index": 3,
+        "kind": "combat",
+        "layout": "barricades-mirror",
+        "obstacles": [
+          {
+            "x": 315,
+            "y": 418,
+            "width": 185,
+            "height": 62
+          },
+          {
+            "x": 515,
+            "y": 120,
+            "width": 160,
+            "height": 62
+          }
+        ],
+        "encounters": [
+          {
+            "id": "room-3-enemy-0",
+            "kind": "elite",
+            "x": 770,
+            "y": 440,
+            "initialCooldown": 1.0309763363562525
+          },
+          {
+            "id": "room-3-enemy-1",
+            "kind": "ranged",
+            "x": 640,
+            "y": 300,
+            "initialCooldown": 1.0130545693915338
+          },
+          {
+            "id": "room-3-enemy-2",
+            "kind": "melee",
+            "x": 810,
+            "y": 290,
+            "initialCooldown": 0.6776914913207293
+          }
+        ],
+        "offers": [
+          "movement",
+          "cadence"
+        ]
+      },
+      {
+        "index": 4,
+        "kind": "boss",
+        "layout": "warden-arena",
+        "obstacles": [],
+        "encounters": [
+          {
+            "id": "warden",
+            "kind": "boss",
+            "x": 700,
+            "y": 300,
+            "initialCooldown": 1.1
+          }
+        ],
+        "offers": []
+      }
+    ]
+  },
+  {
+    "seed": 42,
+    "repeatedIdentically": true,
+    "hashes": {
+      "layouts": "4128aa951e6fe4040cfaabdad0c222793d5802cbf504f593f4d52a2644169b0a",
+      "encounters": "ea5b96ceb3ed516c164c5991b0c1d47b66c6d521198032767e81b7bab2b6d89b",
+      "offers": "37640155297733c713668c93a9a50561a61cd4145f12f2ded31268de5d162d65"
+    },
+    "rooms": [
+      {
+        "index": 0,
+        "kind": "start",
+        "layout": "sanctuary",
+        "obstacles": [],
+        "encounters": [],
+        "offers": []
+      },
+      {
+        "index": 1,
+        "kind": "combat",
+        "layout": "barricades",
+        "obstacles": [
+          {
+            "x": 315,
+            "y": 120,
+            "width": 185,
+            "height": 62
+          },
+          {
+            "x": 515,
+            "y": 418,
+            "width": 160,
+            "height": 62
+          }
+        ],
+        "encounters": [
+          {
+            "id": "room-1-enemy-0",
+            "kind": "melee",
+            "x": 810,
+            "y": 290,
+            "initialCooldown": 1.0974425389897078
+          },
+          {
+            "id": "room-1-enemy-1",
+            "kind": "ranged",
+            "x": 710,
+            "y": 160,
+            "initialCooldown": 0.8342009080573917
+          },
+          {
+            "id": "room-1-enemy-2",
+            "kind": "ranged",
+            "x": 770,
+            "y": 440,
+            "initialCooldown": 0.768352302769199
+          }
+        ],
+        "offers": [
+          "damage",
+          "survival"
+        ]
+      },
+      {
+        "index": 2,
+        "kind": "combat",
+        "layout": "split-hall",
+        "obstacles": [
+          {
+            "x": 450,
+            "y": 75,
+            "width": 60,
+            "height": 155
+          },
+          {
+            "x": 450,
+            "y": 370,
+            "width": 60,
+            "height": 155
+          }
+        ],
+        "encounters": [
+          {
+            "id": "room-2-enemy-0",
+            "kind": "elite",
+            "x": 770,
+            "y": 440,
+            "initialCooldown": 0.6807255597785116
+          },
+          {
+            "id": "room-2-enemy-1",
+            "kind": "melee",
+            "x": 640,
+            "y": 300,
+            "initialCooldown": 1.0053943943232297
+          },
+          {
+            "id": "room-2-enemy-2",
+            "kind": "ranged",
+            "x": 710,
+            "y": 160,
+            "initialCooldown": 0.6689227733761073
+          }
+        ],
+        "offers": [
+          "cadence",
+          "movement"
+        ]
+      },
+      {
+        "index": 3,
+        "kind": "combat",
+        "layout": "barricades-mirror",
+        "obstacles": [
+          {
+            "x": 315,
+            "y": 418,
+            "width": 185,
+            "height": 62
+          },
+          {
+            "x": 515,
+            "y": 120,
+            "width": 160,
+            "height": 62
+          }
+        ],
+        "encounters": [
+          {
+            "id": "room-3-enemy-0",
+            "kind": "elite",
+            "x": 640,
+            "y": 300,
+            "initialCooldown": 0.7538031406700612
+          },
+          {
+            "id": "room-3-enemy-1",
+            "kind": "ranged",
+            "x": 770,
+            "y": 440,
+            "initialCooldown": 1.1556128751952202
+          },
+          {
+            "id": "room-3-enemy-2",
+            "kind": "melee",
+            "x": 810,
+            "y": 290,
+            "initialCooldown": 0.9426439504139126
+          }
+        ],
+        "offers": [
+          "survival",
+          "cadence"
+        ]
+      },
+      {
+        "index": 4,
+        "kind": "boss",
+        "layout": "warden-arena",
+        "obstacles": [],
+        "encounters": [
+          {
+            "id": "warden",
+            "kind": "boss",
+            "x": 700,
+            "y": 300,
+            "initialCooldown": 1.1
+          }
+        ],
+        "offers": []
+      }
+    ]
+  }
+]

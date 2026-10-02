@@ -1,0 +1,19 @@
+PASS seed 17 repeat check 1
+  layouts: 236456bed46b738185b018a32c4507fe13cef3fa4fc85facc716f7b06b009f39
+  encounters: c38e3500b3050f30a23719c6360f1bd229564ad8237414f6828d8b8a71030cd8
+  offers: 543786346a261aabe40a0a57ea3741d8e8ebf1f580be399497ae3603ac97d595
+PASS seed 17 repeat check 2
+  layouts: 236456bed46b738185b018a32c4507fe13cef3fa4fc85facc716f7b06b009f39
+  encounters: c38e3500b3050f30a23719c6360f1bd229564ad8237414f6828d8b8a71030cd8
+  offers: 543786346a261aabe40a0a57ea3741d8e8ebf1f580be399497ae3603ac97d595
+PASS seed 42 repeat check 1
+  layouts: f39edb15ae98e89f2f4da9fc590b399cb70b8f726da82d43887a8f6564c4ef61
+  encounters: 16c7502e19115ee56f65ecfce9290e3e051836b93bd2891eb952d05aa8e7e81d
+  offers: aa3981a3e970f23809bcbacef744c3f165d9db3faeffa5f555c72ef7cb5f5ca8
+PASS seed 42 repeat check 2
+  layouts: f39edb15ae98e89f2f4da9fc590b399cb70b8f726da82d43887a8f6564c4ef61
+  encounters: 16c7502e19115ee56f65ecfce9290e3e051836b93bd2891eb952d05aa8e7e81d
+  offers: aa3981a3e970f23809bcbacef744c3f165d9db3faeffa5f555c72ef7cb5f5ca8
+PASS 17/42 variation: layouts
+PASS 17/42 variation: encounters
+PASS 17/42 variation: offers

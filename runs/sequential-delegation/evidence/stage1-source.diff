@@ -1,0 +1,1111 @@
+--- /dev/null
++++ game/combat.mjs
+@@ -0,0 +1,234 @@
++import { effect, emit } from './events.mjs';
++import { findPath, lineBlocked, moveCircle, WORLD } from './geometry.mjs';
++
++export const ENEMY_STATS = Object.freeze({
++  melee: { health: 36, radius: 14, speed: 74, damage: 8 },
++  ranged: { health: 30, radius: 15, speed: 50, damage: 10 },
++  elite: { health: 70, radius: 21, speed: 64, damage: 15 },
++  boss: { health: 240, radius: 34, speed: 44, damage: 16 },
++});
++
++export function createEnemy(specification) {
++  const stats = ENEMY_STATS[specification.kind];
++  return { ...specification, ...stats, maxHealth: stats.health,
++    state: 'idle', cooldown: specification.initialCooldown, attack: null,
++    damageFlash: 0, path: [], pathTimer: 0, patternIndex: 0 };
++}
++
++export function damagePlayer(game, amount, source = 'enemy') {
++  const player = game.player;
++  if (game.phase !== 'playing' || player.health <= 0 || player.invulnerable > 0 || !(amount > 0)) return false;
++  player.health = Math.max(0, Math.min(player.maxHealth, player.health - amount));
++  player.invulnerable = player.invulnerability;
++  player.damageFlash = 0.2;
++  emit(game, 'player-damaged', { amount, health: player.health, source, x: player.x, y: player.y });
++  effect(game, 'player-damage', { x: player.x, y: player.y }, 0.32);
++  if (player.health === 0) {
++    game.phase = 'game-over';
++    emit(game, 'game-over', { x: player.x, y: player.y });
++    effect(game, 'player-defeat', { x: player.x, y: player.y }, 1.2);
++  }
++  return true;
++}
++
++export function damageEnemy(game, enemy, amount) {
++  if (game.phase !== 'playing' || enemy.health <= 0 || !(amount > 0)) return false;
++  enemy.health = Math.max(0, enemy.health - amount);
++  enemy.damageFlash = 0.15;
++  emit(game, 'enemy-damaged', { id: enemy.id, kind: enemy.kind, amount, x: enemy.x, y: enemy.y });
++  effect(game, 'enemy-hit', { x: enemy.x, y: enemy.y }, 0.2);
++  if (enemy.health === 0) {
++    enemy.state = 'dead';
++    enemy.attack = null;
++    emit(game, 'enemy-defeated', { id: enemy.id, kind: enemy.kind, x: enemy.x, y: enemy.y });
++    effect(game, 'enemy-defeat', { x: enemy.x, y: enemy.y, radius: enemy.radius }, 0.5);
++  }
++  return true;
++}
++
++export function playerAttack(game) {
++  const player = game.player;
++  if (game.phase !== 'playing' || game.pendingReward || player.cooldown > 0) return false;
++  player.cooldown = player.attackCooldown;
++  const room = game.rooms[game.roomIndex];
++  const obstacles = game.dungeon.rooms[game.roomIndex].obstacles;
++  emit(game, 'player-attack', { x: player.x, y: player.y, angle: player.aimAngle });
++  effect(game, 'slash', { x: player.x, y: player.y, angle: player.aimAngle,
++    range: player.attackRange, halfAngle: player.attackHalfAngle }, 0.16);
++  for (const enemy of room.enemies) {
++    if (enemy.health <= 0) continue;
++    const dx = enemy.x - player.x;
++    const dy = enemy.y - player.y;
++    const distance = Math.hypot(dx, dy);
++    const angle = Math.atan2(dy, dx);
++    const difference = Math.atan2(Math.sin(angle - player.aimAngle), Math.cos(angle - player.aimAngle));
++    if (distance <= player.attackRange + enemy.radius &&
++        (distance < player.radius + enemy.radius || Math.abs(difference) <= player.attackHalfAngle) &&
++        !lineBlocked(player.x, player.y, enemy.x, enemy.y, obstacles)) damageEnemy(game, enemy, player.damage);
++  }
++  return true;
++}
++
++function pursue(enemy, targetX, targetY, dt, obstacles) {
++  enemy.pathTimer -= dt;
++  if (enemy.pathTimer <= 0 || enemy.path.length === 0) {
++    enemy.path = findPath(enemy.x, enemy.y, targetX, targetY, enemy.radius, obstacles);
++    enemy.pathTimer = 0.3;
++  }
++  const point = enemy.path[0];
++  if (!point) return;
++  const dx = point.x - enemy.x;
++  const dy = point.y - enemy.y;
++  const distance = Math.hypot(dx, dy);
++  if (distance < 5) { enemy.path.shift(); return; }
++  const step = Math.min(distance, enemy.speed * dt);
++  moveCircle(enemy, dx / distance * step, dy / distance * step, obstacles);
++}
++
++function beginAttack(game, enemy, kind, duration, extra = {}) {
++  const player = game.player;
++  enemy.state = 'windup';
++  enemy.attack = { kind, timer: duration, duration, x: enemy.x, y: enemy.y,
++    targetX: player.x, targetY: player.y,
++    angle: Math.atan2(player.y - enemy.y, player.x - enemy.x), ...extra };
++  emit(game, 'enemy-telegraph', { id: enemy.id, kind: enemy.kind, pattern: kind,
++    x: enemy.x, y: enemy.y, targetX: player.x, targetY: player.y });
++}
++
++function shoot(game, room, enemy, angle, speed = 235, damage = enemy.damage) {
++  const distance = enemy.radius + 8;
++  room.projectiles.push({ id: `projectile-${game.nextId++}`, owner: enemy.id,
++    x: enemy.x + Math.cos(angle) * distance, y: enemy.y + Math.sin(angle) * distance,
++    vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
++    radius: 6, damage, remaining: 3.5, kind: enemy.kind === 'boss' ? 'warden-bolt' : 'bolt' });
++}
++
++function completeWindup(game, room, enemy) {
++  const attack = enemy.attack;
++  const player = game.player;
++  emit(game, 'enemy-attack', { id: enemy.id, kind: enemy.kind, pattern: attack.kind, x: enemy.x, y: enemy.y });
++  if (attack.kind === 'melee') {
++    effect(game, 'melee-strike', { x: enemy.x, y: enemy.y, radius: 48 }, 0.22);
++    if (Math.hypot(player.x - enemy.x, player.y - enemy.y) <= 48 + player.radius) damagePlayer(game, enemy.damage, 'melee');
++    enemy.cooldown = 1.25;
++  } else if (attack.kind === 'shot') {
++    shoot(game, room, enemy, attack.angle);
++    enemy.cooldown = 1.55;
++  } else if (attack.kind === 'charge') {
++    enemy.state = 'charging';
++    enemy.attack = { ...attack, timer: 0.65, duration: 0.65, hitPlayer: false };
++    return;
++  } else if (attack.kind === 'fan') {
++    for (const offset of [-0.56, -0.28, 0, 0.28, 0.56]) shoot(game, room, enemy, attack.angle + offset, 195);
++    enemy.cooldown = 1.45;
++  } else if (attack.kind === 'nova') {
++    enemy.cooldown = 1.7;
++  }
++  enemy.state = 'idle';
++  enemy.attack = null;
++}
++
++function tickEnemy(game, room, enemy, dt, obstacles) {
++  if (enemy.health <= 0) return;
++  enemy.damageFlash = Math.max(0, enemy.damageFlash - dt);
++  enemy.cooldown = Math.max(0, enemy.cooldown - dt);
++  const player = game.player;
++  if (enemy.state === 'windup') {
++    enemy.attack.timer -= dt;
++    if (enemy.attack.timer <= 1e-9) completeWindup(game, room, enemy);
++    return;
++  }
++  if (enemy.state === 'charging') {
++    const attack = enemy.attack;
++    const x = enemy.x;
++    const y = enemy.y;
++    moveCircle(enemy, Math.cos(attack.angle) * 340 * dt, Math.sin(attack.angle) * 340 * dt, obstacles);
++    attack.timer -= dt;
++    if (!attack.hitPlayer && Math.hypot(player.x - enemy.x, player.y - enemy.y) < enemy.radius + player.radius + 5) {
++      attack.hitPlayer = damagePlayer(game, enemy.damage, 'elite-charge');
++    }
++    if (attack.timer <= 0 || Math.hypot(enemy.x - x, enemy.y - y) < 340 * dt * 0.4) {
++      enemy.state = 'idle'; enemy.attack = null; enemy.cooldown = 1.8;
++    }
++    return;
++  }
++  const distance = Math.hypot(player.x - enemy.x, player.y - enemy.y);
++  if (enemy.kind === 'melee') {
++    if (distance < 54 && enemy.cooldown <= 0) beginAttack(game, enemy, 'melee', 0.48, { radius: 48 });
++    else if (distance > 38) pursue(enemy, player.x, player.y, dt, obstacles);
++  } else if (enemy.kind === 'ranged') {
++    if (distance < 420 && enemy.cooldown <= 0 && !lineBlocked(enemy.x, enemy.y, player.x, player.y, obstacles)) {
++      beginAttack(game, enemy, 'shot', 0.85);
++    } else if (distance > 300) pursue(enemy, player.x, player.y, dt, obstacles);
++    else if (distance < 180) {
++      const angle = Math.atan2(enemy.y - player.y, enemy.x - player.x);
++      pursue(enemy, Math.max(55, Math.min(905, enemy.x + Math.cos(angle) * 110)),
++        Math.max(55, Math.min(545, enemy.y + Math.sin(angle) * 110)), dt, obstacles);
++    }
++  } else if (enemy.kind === 'elite') {
++    if (distance < 320 && enemy.cooldown <= 0) beginAttack(game, enemy, 'charge', 1.0, { range: 221 });
++    else if (distance > 110) pursue(enemy, player.x, player.y, dt, obstacles);
++  } else if (enemy.kind === 'boss') {
++    if (enemy.cooldown <= 0) {
++      const pattern = enemy.patternIndex++ % 2 === 0 ? 'fan' : 'nova';
++      beginAttack(game, enemy, pattern, pattern === 'fan' ? 1.0 : 1.25);
++      if (pattern === 'nova') {
++        for (const offset of [{ x: 0, y: 0 }, { x: -145, y: 110 }, { x: 145, y: -110 }]) {
++          room.hazards.push({ id: `hazard-${game.nextId++}`, kind: 'nova', owner: enemy.id,
++            x: Math.max(115, Math.min(845, player.x + offset.x)),
++            y: Math.max(110, Math.min(490, player.y + offset.y)), radius: 78,
++            timer: 1.25, duration: 1.25, active: 0.3, damage: enemy.damage, hitPlayer: false });
++        }
++      }
++    } else if (distance > 250) pursue(enemy, player.x, player.y, dt, obstacles);
++  }
++}
++
++function tickProjectiles(game, room, dt, obstacles) {
++  for (const projectile of room.projectiles) {
++    const oldX = projectile.x;
++    const oldY = projectile.y;
++    projectile.x += projectile.vx * dt;
++    projectile.y += projectile.vy * dt;
++    projectile.remaining -= dt;
++    if (lineBlocked(oldX, oldY, projectile.x, projectile.y, obstacles, projectile.radius) ||
++        projectile.x < WORLD.wall || projectile.x > WORLD.width - WORLD.wall ||
++        projectile.y < WORLD.wall || projectile.y > WORLD.height - WORLD.wall) projectile.remaining = 0;
++    if (projectile.remaining > 0 && Math.hypot(game.player.x - projectile.x, game.player.y - projectile.y) <
++        game.player.radius + projectile.radius) {
++      damagePlayer(game, projectile.damage, projectile.kind);
++      projectile.remaining = 0;
++    }
++  }
++  room.projectiles = room.projectiles.filter(projectile => projectile.remaining > 0);
++}
++
++function tickHazards(game, room, dt) {
++  for (const hazard of room.hazards) {
++    if (hazard.timer > 0) {
++      hazard.timer -= dt;
++      if (hazard.timer <= 1e-9) {
++        hazard.timer = 0;
++        emit(game, 'hazard-exploded', { x: hazard.x, y: hazard.y, radius: hazard.radius });
++        effect(game, 'nova-explosion', { x: hazard.x, y: hazard.y, radius: hazard.radius }, 0.3);
++      }
++    } else hazard.active -= dt;
++    if (hazard.timer <= 0 && !hazard.hitPlayer &&
++        Math.hypot(game.player.x - hazard.x, game.player.y - hazard.y) < hazard.radius + game.player.radius) {
++      hazard.hitPlayer = damagePlayer(game, hazard.damage, 'boss-nova');
++    }
++  }
++  room.hazards = room.hazards.filter(hazard => hazard.timer > 0 || hazard.active > 0);
++}
++
++export function tickCombat(game, dt) {
++  const room = game.rooms[game.roomIndex];
++  const obstacles = game.dungeon.rooms[game.roomIndex].obstacles;
++  for (const enemy of room.enemies) {
++    if (game.phase !== 'playing') break;
++    tickEnemy(game, room, enemy, dt, obstacles);
++  }
++  if (game.phase !== 'playing') return;
++  tickProjectiles(game, room, dt, obstacles);
++  if (game.phase === 'playing') tickHazards(game, room, dt);
++}
+--- /dev/null
++++ game/dungeon.mjs
+@@ -0,0 +1,54 @@
++import { createRng, deepFreeze, parseSeed, shuffle } from './rng.mjs';
++import { UPGRADES } from './upgrades.mjs';
++
++const LAYOUTS = [
++  { id: 'pillars', obstacles: [{ x: 365, y: 105, width: 80, height: 105 }, { x: 515, y: 390, width: 80, height: 105 }] },
++  { id: 'barricades', obstacles: [{ x: 315, y: 120, width: 185, height: 62 }, { x: 515, y: 418, width: 160, height: 62 }] },
++  { id: 'split-hall', obstacles: [{ x: 450, y: 75, width: 60, height: 155 }, { x: 450, y: 370, width: 60, height: 155 }] },
++  { id: 'alcoves', obstacles: [{ x: 260, y: 118, width: 90, height: 105 }, { x: 570, y: 90, width: 105, height: 65 }, { x: 570, y: 410, width: 105, height: 65 }] },
++];
++const ENCOUNTERS = [
++  [['melee', 'melee', 'ranged'], ['melee', 'ranged', 'ranged']],
++  [['elite', 'melee'], ['elite', 'melee', 'ranged']],
++  [['elite', 'ranged', 'melee'], ['elite', 'ranged', 'ranged', 'melee']],
++];
++const SPAWNS = [{ x: 710, y: 160 }, { x: 770, y: 440 }, { x: 810, y: 290 }, { x: 640, y: 300 }];
++
++export function generateDungeon(seedValue = 17) {
++  const seed = parseSeed(seedValue);
++  const random = createRng(seed);
++  const upgradeOrder = shuffle(Object.keys(UPGRADES), random);
++  const third = shuffle(Object.keys(UPGRADES), random).slice(0, 2);
++  const offers = [upgradeOrder.slice(0, 2), upgradeOrder.slice(2, 4), third];
++  const rooms = [{ index: 0, id: 'room-0', kind: 'start', name: 'Quiet Threshold',
++    layout: 'sanctuary', obstacles: [], encounters: [], offers: [], previous: null, next: 1 }];
++  for (let i = 0; i < 3; i++) {
++    const layout = LAYOUTS[Math.floor(random() * LAYOUTS.length)];
++    const kinds = ENCOUNTERS[i][Math.floor(random() * ENCOUNTERS[i].length)];
++    const spawns = shuffle(SPAWNS, random);
++    const mirrored = random() < 0.5;
++    rooms.push({ index: i + 1, id: `room-${i + 1}`, kind: 'combat',
++      name: ['Ember Gallery', 'Sentinel Hall', 'Last Watch'][i],
++      layout: `${layout.id}${mirrored ? '-mirror' : ''}`,
++      obstacles: layout.obstacles.map(obstacle => ({ ...obstacle,
++        y: mirrored ? 600 - obstacle.y - obstacle.height : obstacle.y })),
++      encounters: kinds.map((kind, j) => ({ id: `room-${i + 1}-enemy-${j}`, kind,
++        x: spawns[j].x, y: spawns[j].y, initialCooldown: 0.65 + random() * 0.6 })),
++      offers: offers[i], previous: i, next: i + 2,
++    });
++  }
++  rooms.push({ index: 4, id: 'room-4', kind: 'boss', name: 'Warden of the Gate',
++    layout: 'warden-arena', obstacles: [], offers: [], previous: 3, next: null,
++    encounters: [{ id: 'warden', kind: 'boss', x: 700, y: 300, initialCooldown: 1.1 }] });
++  return deepFreeze({ seed, rooms });
++}
++
++export function dungeonSignatures(seed) {
++  const dungeon = generateDungeon(seed);
++  return {
++    seed: dungeon.seed,
++    layouts: JSON.stringify(dungeon.rooms.map(room => ({ layout: room.layout, obstacles: room.obstacles }))),
++    encounters: JSON.stringify(dungeon.rooms.map(room => room.encounters)),
++    offers: JSON.stringify(dungeon.rooms.map(room => room.offers)),
++  };
++}
+--- /dev/null
++++ game/events.mjs
+@@ -0,0 +1,12 @@
++export function emit(game, type, details = {}) {
++  game.events.push({ type, time: game.time, ...details });
++  if (game.events.length > 500) game.events.splice(0, game.events.length - 500);
++}
++
++export function effect(game, kind, details, duration = 0.25) {
++  game.effects.push({ kind, ...details, remaining: duration, duration });
++}
++
++export function drainEvents(game) {
++  return game.events.splice(0);
++}
+--- /dev/null
++++ game/geometry.mjs
+@@ -0,0 +1,91 @@
++export const WORLD = Object.freeze({ width: 960, height: 600, wall: 28, doorTop: 236, doorBottom: 364 });
++
++export function circleHitsRect(x, y, radius, rectangle) {
++  const nearestX = Math.max(rectangle.x, Math.min(x, rectangle.x + rectangle.width));
++  const nearestY = Math.max(rectangle.y, Math.min(y, rectangle.y + rectangle.height));
++  return (x - nearestX) ** 2 + (y - nearestY) ** 2 < radius ** 2;
++}
++
++export function blockedAt(x, y, radius, obstacles) {
++  return obstacles.some(rectangle => circleHitsRect(x, y, radius, rectangle));
++}
++
++export function segmentHitsRect(x1, y1, x2, y2, rectangle, padding = 0) {
++  const minX = rectangle.x - padding;
++  const maxX = rectangle.x + rectangle.width + padding;
++  const minY = rectangle.y - padding;
++  const maxY = rectangle.y + rectangle.height + padding;
++  let enter = 0;
++  let leave = 1;
++  for (const [start, delta, min, max] of [[x1, x2 - x1, minX, maxX], [y1, y2 - y1, minY, maxY]]) {
++    if (Math.abs(delta) < 1e-10) {
++      if (start < min || start > max) return false;
++    } else {
++      const first = (min - start) / delta;
++      const second = (max - start) / delta;
++      enter = Math.max(enter, Math.min(first, second));
++      leave = Math.min(leave, Math.max(first, second));
++      if (enter > leave) return false;
++    }
++  }
++  return true;
++}
++
++export function lineBlocked(x1, y1, x2, y2, obstacles, padding = 0) {
++  return obstacles.some(rectangle => segmentHitsRect(x1, y1, x2, y2, rectangle, padding));
++}
++
++export function moveCircle(actor, dx, dy, obstacles) {
++  const min = WORLD.wall + actor.radius;
++  const maxX = WORLD.width - WORLD.wall - actor.radius;
++  const maxY = WORLD.height - WORLD.wall - actor.radius;
++  const x = Math.max(min, Math.min(maxX, actor.x + dx));
++  if (!blockedAt(x, actor.y, actor.radius, obstacles)) actor.x = x;
++  const y = Math.max(min, Math.min(maxY, actor.y + dy));
++  if (!blockedAt(actor.x, y, actor.radius, obstacles)) actor.y = y;
++}
++
++// A tiny visibility graph routes pursuers around the small authored obstacle pool.
++// It is rebuilt only when an enemy refreshes its path, never on render frames.
++export function findPath(x, y, targetX, targetY, radius, obstacles) {
++  const padding = radius + 3;
++  if (!lineBlocked(x, y, targetX, targetY, obstacles, padding)) return [{ x: targetX, y: targetY }];
++  const points = [{ x, y }, { x: targetX, y: targetY }];
++  for (const rectangle of obstacles) {
++    for (const px of [rectangle.x - padding - 1, rectangle.x + rectangle.width + padding + 1]) {
++      for (const py of [rectangle.y - padding - 1, rectangle.y + rectangle.height + padding + 1]) {
++        if (px > WORLD.wall + radius && px < WORLD.width - WORLD.wall - radius &&
++            py > WORLD.wall + radius && py < WORLD.height - WORLD.wall - radius &&
++            !blockedAt(px, py, padding, obstacles)) points.push({ x: px, y: py });
++      }
++    }
++  }
++  const distances = points.map(() => Infinity);
++  const previous = points.map(() => -1);
++  const visited = new Set();
++  distances[0] = 0;
++  for (let step = 0; step < points.length; step++) {
++    let index = -1;
++    for (let i = 0; i < points.length; i++) {
++      if (!visited.has(i) && (index < 0 || distances[i] < distances[index])) index = i;
++    }
++    if (index < 0 || !Number.isFinite(distances[index])) break;
++    if (index === 1) break;
++    visited.add(index);
++    for (let next = 0; next < points.length; next++) {
++      if (visited.has(next) || next === index) continue;
++      const a = points[index];
++      const b = points[next];
++      if (lineBlocked(a.x, a.y, b.x, b.y, obstacles, padding)) continue;
++      const candidate = distances[index] + Math.hypot(a.x - b.x, a.y - b.y);
++      if (candidate < distances[next]) {
++        distances[next] = candidate;
++        previous[next] = index;
++      }
++    }
++  }
++  if (!Number.isFinite(distances[1])) return [];
++  const path = [];
++  for (let i = 1; i !== 0; i = previous[i]) path.unshift(points[i]);
++  return path;
++}
+--- /dev/null
++++ game/model.mjs
+@@ -0,0 +1,160 @@
++import { generateDungeon } from './dungeon.mjs';
++import { BASE_STATS, applyUpgrade } from './upgrades.mjs';
++import { createEnemy, playerAttack, tickCombat } from './combat.mjs';
++import { emit } from './events.mjs';
++import { moveCircle, WORLD } from './geometry.mjs';
++import { parseSeed } from './rng.mjs';
++
++export { drainEvents } from './events.mjs';
++export { WORLD } from './geometry.mjs';
++export const FIXED_STEP = 1 / 120;
++
++function freshPlayer() {
++  return { ...BASE_STATS, x: 92, y: 300, radius: 15, health: BASE_STATS.maxHealth,
++    aimAngle: 0, invulnerable: 0, damageFlash: 0, cooldown: 0, upgrades: [] };
++}
++
++export function createGame({ seed = 17 } = {}) {
++  const game = { seed: parseSeed(seed), phase: 'menu', events: [], effects: [] };
++  resetRun(game, game.seed);
++  game.phase = 'menu';
++  return game;
++}
++
++function resetRun(game, seed) {
++  game.seed = parseSeed(seed);
++  game.dungeon = generateDungeon(game.seed);
++  game.rooms = game.dungeon.rooms.map(room => ({ index: room.index,
++    visited: room.index === 0, cleared: room.kind === 'start', rewardClaimed: room.kind !== 'combat',
++    enemies: room.encounters.map(createEnemy), projectiles: [], hazards: [] }));
++  game.player = freshPlayer();
++  game.roomIndex = 0;
++  game.pendingReward = null;
++  game.time = 0;
++  game.accumulator = 0;
++  game.nextId = 1;
++  game.events = [];
++  game.effects = [];
++  game.lockMessageCooldown = 0;
++}
++
++export function startRun(game, seed = game.seed) {
++  resetRun(game, seed);
++  game.phase = 'playing';
++  emit(game, 'run-started', { seed: game.seed });
++  return game;
++}
++
++export function returnToMenu(game) {
++  game.phase = 'menu';
++  game.pendingReward = null;
++  game.accumulator = 0;
++  emit(game, 'menu-opened');
++}
++
++export function currentRoom(game) {
++  return { definition: game.dungeon.rooms[game.roomIndex], runtime: game.rooms[game.roomIndex] };
++}
++
++export function isRoomLocked(game, roomIndex = game.roomIndex) {
++  return game.rooms[roomIndex].enemies.some(enemy => enemy.health > 0);
++}
++
++function enterRoom(game, roomIndex, fromEast) {
++  game.roomIndex = roomIndex;
++  const room = game.rooms[roomIndex];
++  room.visited = true;
++  game.player.x = fromEast ? WORLD.width - 78 : 78;
++  game.player.y = 300;
++  game.player.cooldown = 0;
++  game.player.invulnerable = Math.max(game.player.invulnerable, 0.55);
++  emit(game, 'room-entered', { roomIndex, kind: game.dungeon.rooms[roomIndex].kind });
++}
++
++function movePlayer(game, dt, input) {
++  const player = game.player;
++  let moveX = Number(input.moveX) || 0;
++  let moveY = Number(input.moveY) || 0;
++  const length = Math.hypot(moveX, moveY);
++  if (length > 1) { moveX /= length; moveY /= length; }
++  const { definition } = currentRoom(game);
++  const dx = moveX * player.speed * dt;
++  const dy = moveY * player.speed * dt;
++  const nextX = player.x + dx;
++  const inDoor = player.y > WORLD.doorTop + player.radius && player.y < WORLD.doorBottom - player.radius;
++  if (inDoor && (nextX < WORLD.wall + player.radius || nextX > WORLD.width - WORLD.wall - player.radius)) {
++    const target = nextX < WORLD.width / 2 ? definition.previous : definition.next;
++    if (target !== null && !isRoomLocked(game)) {
++      enterRoom(game, target, nextX < WORLD.width / 2);
++      return;
++    }
++    if (target !== null && isRoomLocked(game) && game.lockMessageCooldown <= 0) {
++      emit(game, 'door-blocked', { roomIndex: game.roomIndex });
++      game.lockMessageCooldown = 1.0;
++    }
++  }
++  moveCircle(player, dx, dy, definition.obstacles);
++}
++
++function completeRoom(game) {
++  const { definition, runtime } = currentRoom(game);
++  if (runtime.cleared || isRoomLocked(game)) return;
++  runtime.cleared = true;
++  runtime.projectiles = [];
++  runtime.hazards = [];
++  emit(game, 'room-cleared', { roomIndex: game.roomIndex, kind: definition.kind });
++  if (definition.kind === 'boss') {
++    game.phase = 'victory';
++    emit(game, 'victory', { seed: game.seed, time: game.time });
++  } else if (definition.kind === 'combat' && !runtime.rewardClaimed) {
++    game.pendingReward = { roomIndex: game.roomIndex, offers: [...definition.offers] };
++    emit(game, 'reward-offered', { roomIndex: game.roomIndex, offers: [...definition.offers] });
++  }
++}
++
++export function chooseReward(game, id) {
++  if (game.phase !== 'playing' || !game.pendingReward || !game.pendingReward.offers.includes(id)) return false;
++  applyUpgrade(game.player, id);
++  const roomIndex = game.pendingReward.roomIndex;
++  game.rooms[roomIndex].rewardClaimed = true;
++  game.pendingReward = null;
++  game.accumulator = 0;
++  emit(game, 'upgrade-selected', { id, roomIndex });
++  return true;
++}
++
++function fixedUpdate(game, input) {
++  const dt = FIXED_STEP;
++  game.time += dt;
++  game.lockMessageCooldown = Math.max(0, game.lockMessageCooldown - dt);
++  const player = game.player;
++  player.invulnerable = Math.max(0, player.invulnerable - dt);
++  player.damageFlash = Math.max(0, player.damageFlash - dt);
++  player.cooldown = Math.max(0, player.cooldown - dt);
++  for (const visual of game.effects) visual.remaining -= dt;
++  game.effects = game.effects.filter(visual => visual.remaining > 0);
++  if (Number.isFinite(input.aimX) && Number.isFinite(input.aimY)) {
++    const dx = input.aimX - player.x;
++    const dy = input.aimY - player.y;
++    if (Math.hypot(dx, dy) > 1) player.aimAngle = Math.atan2(dy, dx);
++  }
++  movePlayer(game, dt, input);
++  if (input.attack) playerAttack(game);
++  completeRoom(game);
++  if (game.phase !== 'playing' || game.pendingReward) return;
++  tickCombat(game, dt);
++  if (game.phase === 'playing') completeRoom(game);
++}
++
++export function updateGame(game, elapsedSeconds, input = {}) {
++  if (game.phase !== 'playing' || game.pendingReward) { game.accumulator = 0; return; }
++  if (!Number.isFinite(elapsedSeconds) || elapsedSeconds <= 0) return;
++  // Drop long background-tab gaps; normal frame partitions share the same 120 Hz steps.
++  game.accumulator += Math.min(0.25, elapsedSeconds);
++  while (game.accumulator + 1e-10 >= FIXED_STEP && game.phase === 'playing' && !game.pendingReward) {
++    game.accumulator -= FIXED_STEP;
++    if (Math.abs(game.accumulator) < 1e-10) game.accumulator = 0;
++    fixedUpdate(game, input);
++  }
++  if (game.phase !== 'playing' || game.pendingReward) game.accumulator = 0;
++}
+--- /dev/null
++++ game/rng.mjs
+@@ -0,0 +1,35 @@
++export function parseSeed(value, fallback = 17) {
++  const text = String(value ?? '');
++  if (!/^\d+$/.test(text)) return fallback >>> 0;
++  const number = Number(text);
++  return Number.isSafeInteger(number) && number >= 0 && number <= 0xffffffff
++    ? number >>> 0 : fallback >>> 0;
++}
++
++export function createRng(seed) {
++  let state = seed >>> 0;
++  return () => {
++    state = (state + 0x6d2b79f5) >>> 0;
++    let value = state;
++    value = Math.imul(value ^ (value >>> 15), value | 1);
++    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
++    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
++  };
++}
++
++export function shuffle(items, random) {
++  const result = [...items];
++  for (let i = result.length - 1; i > 0; i--) {
++    const j = Math.floor(random() * (i + 1));
++    [result[i], result[j]] = [result[j], result[i]];
++  }
++  return result;
++}
++
++export function deepFreeze(value) {
++  if (value && typeof value === 'object') {
++    Object.values(value).forEach(deepFreeze);
++    Object.freeze(value);
++  }
++  return value;
++}
+--- /dev/null
++++ game/signatures.mjs
+@@ -0,0 +1,16 @@
++import { createHash } from 'node:crypto';
++import assert from 'node:assert/strict';
++import { dungeonSignatures, generateDungeon } from './dungeon.mjs';
++
++const results = [17, 42].map(seed => {
++  const first = dungeonSignatures(seed);
++  const second = dungeonSignatures(seed);
++  assert.deepEqual(first, second);
++  return { seed, repeatedIdentically: true,
++    hashes: Object.fromEntries(['layouts', 'encounters', 'offers'].map(key =>
++      [key, createHash('sha256').update(first[key]).digest('hex')])),
++    rooms: generateDungeon(seed).rooms.map(room => ({ index: room.index, kind: room.kind,
++      layout: room.layout, obstacles: room.obstacles, encounters: room.encounters, offers: room.offers })) };
++});
++for (const key of ['layouts', 'encounters', 'offers']) assert.notEqual(results[0].hashes[key], results[1].hashes[key]);
++console.log(JSON.stringify(results, null, 2));
+--- /dev/null
++++ game/tests/combat.test.mjs
+@@ -0,0 +1,152 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { createGame, startRun, updateGame, currentRoom } from '../model.mjs';
++import { createEnemy, damageEnemy, playerAttack } from '../combat.mjs';
++
++function arena(kind, x = 600, y = 300) {
++  const game = startRun(createGame());
++  game.roomIndex = 4;
++  game.player.x = 400;
++  game.player.y = 300;
++  game.player.invulnerable = 0;
++  const enemy = createEnemy({ id: 'target', kind, x, y, initialCooldown: 0 });
++  game.rooms[4].enemies = [enemy];
++  return { game, enemy, room: game.rooms[4] };
++}
++
++function advance(game, seconds, input = {}, frame = 1 / 60) {
++  for (let elapsed = 0; elapsed < seconds - 1e-9; elapsed += frame) updateGame(game, Math.min(frame, seconds - elapsed), input);
++}
++
++test('slash is aimed, range-limited, and one cooldown cannot repeatedly damage', () => {
++  const { game, enemy } = arena('elite', 480);
++  game.player.aimAngle = Math.PI;
++  playerAttack(game);
++  assert.equal(enemy.health, 70);
++  game.player.cooldown = 0;
++  game.player.aimAngle = 0;
++  assert.equal(playerAttack(game), true);
++  assert.equal(enemy.health, 50);
++  assert.equal(playerAttack(game), false);
++  assert.equal(enemy.health, 50);
++  enemy.x = 700;
++  game.player.cooldown = 0;
++  playerAttack(game);
++  assert.equal(enemy.health, 50);
++  assert.ok(game.effects.some(effect => effect.kind === 'slash'));
++});
++
++test('walls block slash hits and player circle movement', () => {
++  const game = startRun(createGame({ seed: 17 }));
++  game.roomIndex = 1;
++  const obstacle = game.dungeon.rooms[1].obstacles[0];
++  const enemy = createEnemy({ id: 'shielded', kind: 'elite',
++    x: obstacle.x + obstacle.width + 23, y: obstacle.y + obstacle.height / 2, initialCooldown: 100 });
++  game.rooms[1].enemies = [enemy];
++  game.player.x = obstacle.x - 17;
++  game.player.y = enemy.y;
++  game.player.attackRange = 400;
++  game.player.aimAngle = 0;
++  playerAttack(game);
++  assert.equal(enemy.health, 70);
++  const x = game.player.x;
++  advance(game, 0.2, { moveX: 1 });
++  assert.ok(game.player.x <= x + 2);
++});
++
++test('melee pursues and visibly winds up before an avoidable close strike', () => {
++  const { game, enemy } = arena('melee', 650);
++  advance(game, 0.5);
++  assert.ok(enemy.x < 650);
++  enemy.x = 440;
++  advance(game, 1 / 120);
++  assert.equal(enemy.state, 'windup');
++  assert.equal(enemy.attack.kind, 'melee');
++  const health = game.player.health;
++  advance(game, 0.5, { moveY: -1 });
++  assert.equal(game.player.health, health);
++  const stationary = arena('melee', 440);
++  advance(stationary.game, 0.5);
++  assert.equal(stationary.game.player.health, 92);
++  assert.ok(stationary.game.events.some(event => event.type === 'player-damaged'));
++});
++
++test('ranged locks its aim during a warning, fires a projectile, and movement evades it', () => {
++  const still = arena('ranged', 650);
++  advance(still.game, 1 / 120);
++  assert.equal(still.enemy.state, 'windup');
++  assert.equal(still.enemy.attack.kind, 'shot');
++  assert.equal(still.enemy.attack.targetY, 300);
++  advance(still.game, 0.9);
++  assert.ok(still.room.projectiles.length > 0);
++  advance(still.game, 1.1);
++  assert.equal(still.game.player.health, 90);
++  const dodged = arena('ranged', 650);
++  advance(dodged.game, 0.2);
++  const angle = dodged.enemy.attack.angle;
++  advance(dodged.game, 0.5, { moveY: -1 });
++  assert.equal(dodged.enemy.attack.angle, angle);
++  advance(dodged.game, 1.3);
++  assert.equal(dodged.game.player.health, 100);
++});
++
++test('elite has a telegraphed fixed-direction charge, distinct damage, and finite recovery', () => {
++  const hit = arena('elite', 600);
++  advance(hit.game, 0.2);
++  assert.equal(hit.enemy.attack.kind, 'charge');
++  assert.equal(hit.enemy.state, 'windup');
++  advance(hit.game, 1.5);
++  assert.equal(hit.game.player.health, 85);
++  assert.equal(hit.enemy.state, 'idle');
++  assert.ok(hit.enemy.cooldown > 0);
++  const dodged = arena('elite', 600);
++  advance(dodged.game, 0.2);
++  advance(dodged.game, 0.8, { moveY: -1 });
++  advance(dodged.game, 0.8);
++  assert.equal(dodged.game.player.health, 100);
++});
++
++test('boss alternates fan and nova; both warnings give movement counterplay', () => {
++  const { game, enemy, room } = arena('boss', 700);
++  advance(game, 0.1);
++  assert.equal(enemy.attack.kind, 'fan');
++  advance(game, 1.05, { moveY: -1 });
++  assert.equal(room.projectiles.length, 5);
++  advance(game, 1.5, { moveX: 1 });
++  assert.equal(enemy.attack.kind, 'nova');
++  assert.equal(room.hazards.length, 3);
++  assert.ok(room.hazards.every(hazard => hazard.timer > 1));
++  advance(game, 1.4, { moveX: -1 });
++  assert.equal(game.player.health, 100);
++  assert.ok(game.events.some(event => event.type === 'hazard-exploded'));
++  assert.deepEqual(game.events.filter(event => event.type === 'enemy-telegraph').slice(0, 2).map(event => event.pattern), ['fan', 'nova']);
++});
++
++test('boss nova deals area damage when the player remains inside its marked zone', () => {
++  const { game, enemy } = arena('boss', 700);
++  enemy.patternIndex = 1;
++  advance(game, 1.3);
++  assert.equal(game.player.health, 84);
++  assert.ok(game.events.some(event => event.type === 'player-damaged' && event.source === 'boss-nova'));
++});
++
++test('enemy defeat has its own event and visual, and happens once', () => {
++  const { game, enemy } = arena('melee', 480);
++  damageEnemy(game, enemy, 100);
++  damageEnemy(game, enemy, 100);
++  assert.equal(enemy.health, 0);
++  assert.equal(enemy.state, 'dead');
++  assert.equal(game.events.filter(event => event.type === 'enemy-defeated').length, 1);
++  assert.ok(game.effects.some(effect => effect.kind === 'enemy-defeat'));
++});
++
++test('combat behavior is independent of 30 Hz versus 144 Hz rendering', () => {
++  const a = arena('boss', 700);
++  const b = arena('boss', 700);
++  advance(a.game, 4, {}, 1 / 30);
++  advance(b.game, 4, {}, 1 / 144);
++  assert.deepEqual(a.enemy, b.enemy);
++  assert.deepEqual(a.room.projectiles, b.room.projectiles);
++  assert.deepEqual(a.room.hazards, b.room.hazards);
++  assert.equal(a.game.player.health, b.game.player.health);
++});
+--- /dev/null
++++ game/tests/full-run.test.mjs
+@@ -0,0 +1,43 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { createGame, startRun, updateGame, chooseReward, currentRoom } from '../model.mjs';
++import { findPath } from '../geometry.mjs';
++
++// This controller uses only normal movement, aiming, attacks, and reward selection.
++// It never changes health, room indices, enemy state, cooldowns, or player statistics.
++for (const seed of [17, 42]) {
++  test(`seed ${seed} supports a complete run through doors, combat, rewards, and boss`, () => {
++    const game = startRun(createGame({ seed }));
++    for (let step = 0; step < 120 * 120 && game.phase === 'playing'; step++) {
++      if (game.pendingReward) {
++        const preference = ['survival', 'damage', 'cadence', 'movement'];
++        chooseReward(game, preference.find(id => game.pendingReward.offers.includes(id)));
++        continue;
++      }
++      const { runtime, definition } = currentRoom(game);
++      const alive = runtime.enemies.filter(enemy => enemy.health > 0).sort((a, b) =>
++        Math.hypot(a.x - game.player.x, a.y - game.player.y) - Math.hypot(b.x - game.player.x, b.y - game.player.y));
++      const aim = alive[0] ?? { x: 945, y: 300 };
++      let targetX = aim.x;
++      let targetY = aim.y;
++      if (alive.length && Math.hypot(targetX - game.player.x, targetY - game.player.y) < 85) {
++        targetX = game.player.x;
++        targetY = game.player.y;
++      }
++      const next = findPath(game.player.x, game.player.y, targetX, targetY, game.player.radius, definition.obstacles)[0]
++        ?? { x: targetX, y: targetY };
++      const dx = next.x - game.player.x;
++      const dy = next.y - game.player.y;
++      const length = Math.hypot(dx, dy);
++      updateGame(game, 1 / 120, { moveX: length > 3 ? dx / length : 0, moveY: length > 3 ? dy / length : 0,
++        aimX: aim.x, aimY: aim.y, attack: alive.length > 0 });
++    }
++    assert.equal(game.phase, 'victory');
++    assert.equal(game.roomIndex, 4);
++    assert.ok(game.player.health > 0);
++    assert.equal(game.player.upgrades.length, 3);
++    assert.ok(game.rooms.every(room => room.visited && room.cleared && room.rewardClaimed));
++    assert.equal(game.events.filter(event => event.type === 'upgrade-selected').length, 3);
++    assert.equal(game.events.filter(event => event.type === 'victory').length, 1);
++  });
++}
+--- /dev/null
++++ game/tests/generation.test.mjs
+@@ -0,0 +1,85 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { createRng, parseSeed } from '../rng.mjs';
++import { generateDungeon, dungeonSignatures } from '../dungeon.mjs';
++import { blockedAt, findPath, lineBlocked, WORLD } from '../geometry.mjs';
++import { ENEMY_STATS } from '../combat.mjs';
++
++test('seed parser accepts the entire uint32 range and rejects invalid inputs', () => {
++  assert.equal(parseSeed('0'), 0);
++  assert.equal(parseSeed('4294967295'), 4294967295);
++  for (const value of ['-1', '42x', '1.5', '4294967296', '', null]) assert.equal(parseSeed(value), 17);
++  const a = createRng(17);
++  const b = createRng(17);
++  assert.deepEqual(Array.from({ length: 20 }, a), Array.from({ length: 20 }, b));
++});
++
++test('17 and 42 reproduce content twice and differ in all required signatures', () => {
++  for (const seed of [17, 42]) {
++    assert.deepEqual(dungeonSignatures(seed), dungeonSignatures(seed));
++    assert.deepEqual(generateDungeon(seed), generateDungeon(seed));
++  }
++  const a = dungeonSignatures(17);
++  const b = dungeonSignatures(42);
++  for (const key of ['layouts', 'encounters', 'offers']) assert.notEqual(a[key], b[key], key);
++  assert.notDeepEqual(generateDungeon(17).rooms.map(room => room.encounters.map(enemy => enemy.kind)),
++    generateDungeon(42).rooms.map(room => room.encounters.map(enemy => enemy.kind)));
++});
++
++test('every generated route has start + three combat + boss with symmetric connected edges', () => {
++  for (const seed of [0, 1, 17, 42, 0xffffffff]) {
++    const dungeon = generateDungeon(seed);
++    assert.deepEqual(dungeon.rooms.map(room => room.kind), ['start', 'combat', 'combat', 'combat', 'boss']);
++    const visited = [];
++    for (let index = 0; index !== null; index = dungeon.rooms[index].next) visited.push(index);
++    assert.deepEqual(visited, [0, 1, 2, 3, 4]);
++    for (const room of dungeon.rooms) {
++      if (room.next !== null) assert.equal(dungeon.rooms[room.next].previous, room.index);
++      assert.equal(lineBlocked(60, 300, 900, 300, room.obstacles, 22), false);
++      for (const enemy of room.encounters) assert.equal(blockedAt(enemy.x, enemy.y, ENEMY_STATS[enemy.kind].radius, room.obstacles), false);
++    }
++  }
++});
++
++test('each combat room offers two different choices and all four effects occur before boss', () => {
++  for (let seed = 0; seed < 100; seed++) {
++    const rooms = generateDungeon(seed).rooms.filter(room => room.kind === 'combat');
++    for (const room of rooms) assert.equal(new Set(room.offers).size, 2);
++    assert.equal(new Set(rooms.flatMap(room => room.offers)).size, 4);
++  }
++});
++
++test('seed generation remains immutable and the safe start contains no hostiles', () => {
++  const dungeon = generateDungeon(17);
++  assert.equal(dungeon.rooms[0].encounters.length, 0);
++  assert.equal(Object.isFrozen(dungeon.rooms[2].encounters[0]), true);
++  assert.throws(() => { dungeon.rooms[1].encounters[0].x = 0; }, TypeError);
++});
++
++test('visibility paths route around a blocking pillar without intersecting expanded geometry', () => {
++  const obstacles = [{ x: 400, y: 200, width: 80, height: 200 }];
++  const path = findPath(300, 300, 600, 300, 14, obstacles);
++  assert.ok(path.length >= 3);
++  let point = { x: 300, y: 300 };
++  for (const next of path) {
++    assert.equal(lineBlocked(point.x, point.y, next.x, next.y, obstacles, 17), false);
++    assert.ok(next.x > WORLD.wall && next.x < WORLD.width - WORLD.wall);
++    point = next;
++  }
++  assert.deepEqual(point, { x: 600, y: 300 });
++});
++
++test('all enemy spawns in 100 generated seeds can path to the entry corridor', () => {
++  let checked = 0;
++  for (let seed = 0; seed < 100; seed++) {
++    for (const room of generateDungeon(seed).rooms) {
++      for (const enemy of room.encounters) {
++        const radius = ENEMY_STATS[enemy.kind].radius;
++        assert.equal(blockedAt(enemy.x, enemy.y, radius, room.obstacles), false);
++        assert.ok(findPath(enemy.x, enemy.y, 80, 300, radius, room.obstacles).length > 0, `${seed}:${enemy.id}`);
++        checked++;
++      }
++    }
++  }
++  assert.equal(checked, 996);
++});
+--- /dev/null
++++ game/tests/model.test.mjs
+@@ -0,0 +1,165 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { createGame, startRun, returnToMenu, updateGame, chooseReward, currentRoom, isRoomLocked, drainEvents, WORLD } from '../model.mjs';
++import { damagePlayer, damageEnemy } from '../combat.mjs';
++import { BASE_STATS, applyUpgrade } from '../upgrades.mjs';
++
++function advance(game, seconds, input = {}, frame = 1 / 60) {
++  for (let elapsed = 0; elapsed < seconds - 1e-9; elapsed += frame) updateGame(game, Math.min(frame, seconds - elapsed), input);
++}
++
++function clearRoom(game) {
++  for (const enemy of currentRoom(game).runtime.enemies) damageEnemy(game, enemy, enemy.health);
++  updateGame(game, 1 / 120);
++}
++
++test('menu rejects movement and combat until a run starts', () => {
++  const game = createGame({ seed: 17 });
++  assert.equal(game.phase, 'menu');
++  advance(game, 1, { moveX: 1, attack: true });
++  assert.equal(game.player.x, 92);
++  assert.equal(game.time, 0);
++  startRun(game);
++  assert.equal(game.phase, 'playing');
++  assert.equal(drainEvents(game)[0].type, 'run-started');
++});
++
++test('movement has equal axial and diagonal speed and ignores render-frame partitioning', () => {
++  const axis = startRun(createGame());
++  const diagonal = startRun(createGame());
++  axis.player.x = diagonal.player.x = 250;
++  axis.player.y = diagonal.player.y = 200;
++  advance(axis, 0.8, { moveX: 1 }, 1 / 30);
++  advance(diagonal, 0.8, { moveX: 1, moveY: 1 }, 1 / 144);
++  assert.ok(Math.abs(Math.hypot(diagonal.player.x - 250, diagonal.player.y - 200) - (axis.player.x - 250)) < 1e-7);
++  const a = startRun(createGame());
++  const b = startRun(createGame());
++  advance(a, 1, { moveX: 1, aimX: 500, aimY: 300, attack: true }, 1 / 30);
++  advance(b, 1, { moveX: 1, aimX: 500, aimY: 300, attack: true }, 1 / 144);
++  assert.ok(Math.abs(a.player.x - b.player.x) < 1e-7);
++  assert.equal(a.events.filter(event => event.type === 'player-attack').length, b.events.filter(event => event.type === 'player-attack').length);
++  assert.equal(a.time, b.time);
++});
++
++test('doors are traversable only in their opening; both combat exits lock until cleared', () => {
++  const game = startRun(createGame());
++  game.player.x = WORLD.width - WORLD.wall - game.player.radius;
++  game.player.y = 150;
++  updateGame(game, 0.1, { moveX: 1 });
++  assert.equal(game.roomIndex, 0);
++  game.player.y = 300;
++  updateGame(game, 1 / 120, { moveX: 1 });
++  assert.equal(game.roomIndex, 1);
++  assert.equal(isRoomLocked(game), true);
++  game.player.x = WORLD.width - WORLD.wall - game.player.radius;
++  updateGame(game, 0.1, { moveX: 1 });
++  assert.equal(game.roomIndex, 1);
++  game.player.x = WORLD.wall + game.player.radius;
++  updateGame(game, 0.1, { moveX: -1 });
++  assert.equal(game.roomIndex, 1);
++  assert.ok(game.events.some(event => event.type === 'door-blocked'));
++  clearRoom(game);
++  assert.equal(isRoomLocked(game), false);
++  assert.equal(game.rooms[1].cleared, true);
++  assert.equal(game.pendingReward.offers.length, 2);
++  const x = game.player.x;
++  advance(game, 1, { moveX: 1, attack: true });
++  assert.equal(game.player.x, x, 'reward selection pauses simulation');
++  assert.equal(chooseReward(game, 'not-offered'), false);
++  assert.equal(chooseReward(game, game.pendingReward.offers[0]), true);
++  game.player.x = WORLD.width - WORLD.wall - game.player.radius;
++  updateGame(game, 1 / 120, { moveX: 1 });
++  assert.equal(game.roomIndex, 2);
++  assert.equal(game.player.upgrades.length, 1);
++});
++
++test('each upgrade has a material distinct effect and survival health remains bounded', () => {
++  const game = startRun(createGame());
++  game.player.health = 60;
++  applyUpgrade(game.player, 'damage');
++  assert.equal(game.player.damage, BASE_STATS.damage + 8);
++  applyUpgrade(game.player, 'cadence');
++  assert.equal(game.player.attackCooldown, BASE_STATS.attackCooldown * 0.75);
++  applyUpgrade(game.player, 'movement');
++  assert.equal(game.player.speed, BASE_STATS.speed * 1.18);
++  applyUpgrade(game.player, 'survival');
++  assert.equal(game.player.maxHealth, 125);
++  assert.equal(game.player.health, 85);
++  assert.deepEqual(game.player.upgrades, ['damage', 'cadence', 'movement', 'survival']);
++  game.player.health = 125;
++  applyUpgrade(game.player, 'survival');
++  assert.equal(game.player.health, 150);
++  for (let i = 0; i < 20; i++) applyUpgrade(game.player, 'cadence');
++  assert.equal(game.player.attackCooldown, 0.16);
++});
++
++test('player damage grants temporary invulnerability; zero health enters game over once', () => {
++  const game = startRun(createGame());
++  assert.equal(damagePlayer(game, 20, 'test'), true);
++  assert.equal(game.player.health, 80);
++  assert.equal(damagePlayer(game, 20), false);
++  assert.equal(game.player.health, 80);
++  advance(game, 0.9);
++  assert.equal(damagePlayer(game, 10000), true);
++  assert.equal(game.player.health, 0);
++  assert.equal(game.phase, 'game-over');
++  damagePlayer(game, 1);
++  advance(game, 2, { moveX: 1, attack: true });
++  assert.equal(game.events.filter(event => event.type === 'game-over').length, 1);
++});
++
++test('fresh runs reset health, upgrades, rooms, encounters, hazards, and progress after either end state', () => {
++  for (const end of ['game-over', 'victory']) {
++    const game = startRun(createGame({ seed: 42 }));
++    const original = JSON.stringify(game.dungeon);
++    applyUpgrade(game.player, 'damage');
++    applyUpgrade(game.player, 'survival');
++    game.player.health = 12;
++    game.roomIndex = 4;
++    game.rooms[1].enemies[0].health = 0;
++    game.rooms[1].cleared = true;
++    game.rooms[1].rewardClaimed = true;
++    game.rooms[4].hazards.push({ id: 'stale' });
++    game.phase = end;
++    startRun(game);
++    assert.equal(game.player.health, 100);
++    assert.equal(game.player.maxHealth, 100);
++    assert.equal(game.player.damage, 20);
++    assert.deepEqual(game.player.upgrades, []);
++    assert.equal(game.roomIndex, 0);
++    assert.equal(game.rooms[1].cleared, false);
++    assert.equal(game.rooms[1].rewardClaimed, false);
++    assert.ok(game.rooms[1].enemies.every(enemy => enemy.health === enemy.maxHealth));
++    assert.equal(game.rooms[4].hazards.length, 0);
++    assert.equal(game.time, 0);
++    assert.equal(JSON.stringify(game.dungeon), original);
++    returnToMenu(game);
++    assert.equal(game.phase, 'menu');
++    startRun(game, 17);
++    assert.equal(game.seed, 17);
++    assert.equal(game.phase, 'playing');
++  }
++});
++
++test('boss defeat completes victory and repeated clears produce no duplicate reward', () => {
++  const game = startRun(createGame());
++  game.roomIndex = 1;
++  clearRoom(game);
++  chooseReward(game, game.pendingReward.offers[0]);
++  advance(game, 0.2);
++  assert.equal(game.pendingReward, null);
++  game.roomIndex = 4;
++  clearRoom(game);
++  assert.equal(game.phase, 'victory');
++  assert.equal(game.events.filter(event => event.type === 'victory').length, 1);
++  assert.equal(game.rooms[4].cleared, true);
++});
++
++test('dynamic combat never mutates seed content signatures', () => {
++  const game = startRun(createGame({ seed: 17 }));
++  const content = JSON.stringify(game.dungeon);
++  game.roomIndex = 1;
++  advance(game, 4, { moveX: 1, aimX: 710, aimY: 160, attack: true });
++  clearRoom(game);
++  assert.equal(JSON.stringify(game.dungeon), content);
++});
+--- /dev/null
++++ game/upgrades.mjs
+@@ -0,0 +1,28 @@
++export const UPGRADES = Object.freeze({
++  damage: Object.freeze({ id: 'damage', name: 'Tempered Edge', category: 'damage',
++    description: '+8 slash damage. Finish dangerous foes with fewer strikes.' }),
++  cadence: Object.freeze({ id: 'cadence', name: 'Quick Hands', category: 'cadence',
++    description: '25% shorter attack cooldown. More strikes while you reposition.' }),
++  movement: Object.freeze({ id: 'movement', name: 'Windstep', category: 'movement',
++    description: '+18% movement speed. Escape warning zones more quickly.' }),
++  survival: Object.freeze({ id: 'survival', name: 'Heart Vessel', category: 'survival',
++    description: '+25 maximum health and heal 25. More room for mistakes.' }),
++});
++
++export const BASE_STATS = Object.freeze({
++  maxHealth: 100, speed: 205, damage: 20, attackCooldown: 0.42,
++  attackRange: 108, attackHalfAngle: 0.95, invulnerability: 0.85,
++});
++
++export function applyUpgrade(player, id) {
++  if (!UPGRADES[id]) return false;
++  if (id === 'damage') player.damage += 8;
++  if (id === 'cadence') player.attackCooldown = Math.max(0.16, player.attackCooldown * 0.75);
++  if (id === 'movement') player.speed *= 1.18;
++  if (id === 'survival') {
++    player.maxHealth += 25;
++    player.health = Math.min(player.maxHealth, player.health + 25);
++  }
++  player.upgrades.push(id);
++  return true;
++}

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10191f">
+  <title>Dungeon Escape · The Last Gate</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">◇</span><div><strong>DUNGEON ESCAPE</strong><span>THE LAST GATE</span></div></div>
+      <div class="header-actions"><span id="seed-label">SEED 17</span><button id="sound-toggle" class="quiet-button" type="button" aria-pressed="true">Sound on</button></div>
+    </header>
+    <section id="hud" class="hud" aria-label="Run status">
+      <div class="health-block"><div class="hud-caption"><span>VITALITY</span><strong id="health-text">100 / 100</strong></div><div class="health-track"><div id="health-fill"></div></div><span id="protection-label" class="subtle">Ready to escape</span></div>
+      <div class="room-block"><div class="hud-caption"><span id="room-progress">ROOM 1 / 5</span><strong id="room-status">SANCTUARY</strong></div><div id="room-name" class="room-name">Quiet Threshold</div><div id="route" class="route" aria-label="Dungeon route"></div></div>
+      <div class="stats-block"><span class="stat"><b id="damage-stat">20</b> DAMAGE</span><span class="stat"><b id="cadence-stat">0.42s</b> CADENCE</span><span class="stat"><b id="speed-stat">205</b> SPEED</span></div>
+    </section>
+    <div class="arena-wrap">
+      <canvas id="arena" width="960" height="600" tabindex="0" aria-label="Dungeon arena. Move with WASD or arrows. Aim with the mouse. Hold Space or the primary mouse button to attack."></canvas>
+      <div id="notice" class="notice" role="status" aria-live="polite"></div>
+      <section id="menu-screen" class="screen" aria-label="Main menu">
+        <div class="menu-panel">
+          <span class="eyebrow">A SHORT ROGUELITE ADVENTURE</span><h1>The last<br><em>gate awaits.</em></h1>
+          <p class="intro">Three chambers. One Warden.<br>Read the warnings, choose your strength, and escape.</p>
+          <form id="start-form"><label for="seed-input">DUNGEON SEED <span>0–4294967295</span></label><div class="seed-start"><input id="seed-input" name="seed" type="text" inputmode="numeric" pattern="[0-9]+" value="17" maxlength="10" required aria-describedby="seed-error"><button id="start-button" class="primary-button" type="submit">Enter the dungeon <span aria-hidden="true">→</span></button></div><p id="seed-error" class="field-error" aria-live="polite"></p></form>
+          <div class="controls"><div><kbd>W A S D</kbd><span>or arrow keys to move</span></div><div><kbd>MOUSE</kbd><span>to aim your blade</span></div><div><kbd>SPACE</kbd><span>or hold primary click to strike</span></div></div>
+          <p class="menu-footnote">Follow the east doors. Gold markings warn of danger.<br>Upgrades last for this run. Every fresh run resets your progress.</p>
+        </div>
+        <div class="menu-art" aria-hidden="true"><div class="gate-symbol">◇</div><span>READ · STRIKE · ESCAPE</span></div>
+      </section>
+      <section id="reward-screen" class="screen modal-screen" hidden aria-label="Upgrade selection">
+        <div class="choice-panel"><span class="eyebrow">CHAMBER CLEARED</span><h2>Choose your strength.</h2><p>Take one gift. Its effect stays with you until this run ends.</p><div id="reward-choices" class="reward-choices"></div><span class="subtle">The dungeon waits while you choose.</span></div>
+      </section>
+      <section id="end-screen" class="screen modal-screen" hidden aria-label="Run ended">
+        <div class="end-panel"><div id="end-symbol" class="end-symbol" aria-hidden="true">◇</div><span id="end-eyebrow" class="eyebrow">RUN ENDED</span><h2 id="end-title">Game Over</h2><p id="end-description"></p><div id="end-summary" class="end-summary"></div><div class="end-actions"><button id="restart-button" class="primary-button" type="button">Fresh run <span aria-hidden="true">↻</span></button><button id="menu-button" class="secondary-button" type="button">Main menu</button></div><span class="subtle">A fresh run resets health, upgrades, rooms, and enemies.</span></div>
+      </section>
+    </div>
+    <footer class="run-footer"><div id="upgrade-list" class="upgrade-list"><span class="subtle">No run upgrades yet</span></div><span class="footer-controls">WASD / ARROWS <i>move</i> · MOUSE <i>aim</i> · SPACE / CLICK <i>strike</i></span></footer>
+  </main>
+  <script type="module" src="main.mjs"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+✔ unsigned 32-bit seed input rejects ambiguous and out-of-range values (1.290201ms)
+✔ seed 17 reproduces every layout, encounter and offer (2.056556ms)
+✔ seed 42 reproduces every layout, encounter and offer (0.2633ms)
+✔ 17 and 42 vary layouts, encounter composition/placement and reward offers independently (0.461139ms)
+✔ 500 seeds preserve connected 5-room route, safe spawns and four reward categories (16.59597ms)
+✔ last hostile opens doors while reward choice pauses travel, then travel succeeds (2.000001ms)
+✔ all four upgrades apply their material effect and persist across travel (1.25735ms)
+✔ fresh run resets health, upgrades, encounters, room, projectiles and timers (0.346375ms)
+✔ health clamps, invulnerability blocks continuous damage, defeat fires once (1.302865ms)
+✔ normalized movement has equal cardinal/diagonal speed and collides with pillars (0.312351ms)
+✔ projectile attack hits the aimed enemy and enforces cadence (0.505671ms)
+✔ melee pursues, telegraphs close strike, hits stationary player and permits dodge (0.376861ms)
+✔ ranged sightline commits its target and projectile can be sidestepped (1.354741ms)
+✔ elite telegraphs charge with distinct speed and allows perpendicular escape (0.633609ms)
+✔ boss alternates warned radial volley and area blasts, both avoidable (0.972409ms)
+✔ boss defeat reaches Victory once and end states freeze combat (0.20937ms)
+✔ pause and reward freeze enemy AI, hazards, movement and attack (0.167972ms)
+✔ physical controls sustain and release, buffer taps, aim with scaled mouse, and clear on blur (1.524166ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 92.72371

@@ -1,0 +1,10 @@
+{
+  "source": "Running browser app initialization and isolated read-only snapshots; no generated model calls invoked by reviewer",
+  "same17": true,
+  "same42": true,
+  "differences": {
+    "layouts": true,
+    "encounters": true,
+    "offers": true
+  }
+}

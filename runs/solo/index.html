@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101a21">
+  <title>Ember Vault · Dungeon Escape</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23efc078' d='M32 4 58 32 32 60 6 32Z'/%3E%3Cpath fill='%23101a21' d='m32 15 12 17-12 17-12-17Z'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="brandbar">
+      <a class="brand" href="./" aria-label="Ember Vault home"><span class="sigil" aria-hidden="true">◆</span><span>EMBER VAULT<small>A DUNGEON ESCAPE</small></span></a>
+      <span class="edition">FIVE ROOMS. ONE WAY OUT.</span>
+      <nav aria-label="Game options">
+        <button id="pause" hidden>Pause</button>
+        <button id="sound" aria-pressed="true">Sound on</button>
+        <button id="menu-action" hidden>Main menu</button>
+      </nav>
+    </header>
+    <section class="hud" id="hud" aria-label="Run information" hidden>
+      <div class="health"><span class="eyebrow">VITALITY <strong id="health-text">100 / 100</strong></span><div class="health-track"><div id="health-fill"></div></div><span id="stats" class="fine"></span></div>
+      <div class="progress"><div id="route" aria-label="Dungeon route"></div><p id="room-text"></p></div>
+      <div class="room-status"><span id="status" class="status"></span><span id="seed-text" class="fine"></span></div>
+    </section>
+    <div class="stage">
+      <canvas id="arena" width="1120" height="640" tabindex="0" aria-label="Dungeon arena. WASD or arrows move; mouse aims; Space or primary mouse button fires."></canvas>
+      <section id="menu" class="screen menu-screen" aria-label="Main menu">
+        <div class="intro"><span class="eyebrow">THE LAST LIGHT BELOW</span><h1>Carry the ember.<br>Find your way out.</h1><p>Three sealed chambers stand between you and the Warden. Read their attacks, forge your strength, and escape the vault.</p><div class="journey"><span>Explore</span><i>→</i><span>Fight</span><i>→</i><span>Choose</span><i>→</i><span>Escape</span></div></div>
+        <form id="start-form" class="start-card">
+          <span class="eyebrow">A NEW DESCENT</span><label for="seed">Dungeon seed</label><div class="seed-row"><input id="seed" name="seed" type="text" inputmode="numeric" value="17" maxlength="10" autocomplete="off" aria-describedby="seed-help seed-error"><button type="button" id="random-seed" aria-label="Choose a new dungeon seed">↻</button></div>
+          <p id="seed-help" class="fine">The same seed opens the same dungeon.<br>Try 17 or 42 for a different descent.</p><p id="seed-error" role="alert"></p>
+          <button type="submit" class="primary">Enter the vault <span>→</span></button>
+          <dl class="controls"><div><dt>WASD / arrows</dt><dd>Move</dd></div><div><dt>Mouse</dt><dd>Aim</dd></div><div><dt>Space / left click</dt><dd>Fire · hold to repeat</dd></div><div><dt>Esc</dt><dd>Pause</dd></div></dl>
+        </form>
+      </section>
+      <section id="reward" class="screen modal-screen" aria-label="Choose an upgrade" hidden>
+        <div class="reward-panel"><span class="eyebrow">CHAMBER CLEARED</span><h2>Forge your next advantage.</h2><p>Choose one. It lasts for this descent.</p><div id="choices"></div></div>
+      </section>
+      <section id="end" class="screen modal-screen" aria-label="Run ended" hidden>
+        <div class="end-panel"><div id="end-symbol" aria-hidden="true">◆</div><span class="eyebrow" id="end-eyebrow"></span><h2 id="end-title"></h2><p id="end-description"></p><p id="end-summary" class="fine"></p><div class="end-actions"><button id="restart" class="primary">Fresh run →</button><button id="end-menu">Main menu</button></div></div>
+      </section>
+      <section id="paused" class="screen modal-screen" aria-label="Paused" hidden><div class="end-panel"><span class="eyebrow">TAKE A BREATH</span><h2>Descent paused.</h2><p>The vault will wait.</p><button id="resume" class="primary">Resume →</button></div></section>
+      <div id="notice" class="notice" aria-live="polite" hidden></div>
+    </div>
+    <footer class="game-footer"><div id="upgrades"><span class="fine">No permanent progress. Every descent starts fresh.</span></div><span class="key-help"><kbd>WASD</kbd> move <span>·</span> mouse aim <span>·</span> hold <kbd>Space</kbd> fire</span></footer>
+    <details class="field-guide"><summary>Know your enemy <span>Attack cues & survival</span></summary><div class="guide-grid"><p><b>○ Stalker</b>Closes in. Step out of its small red strike circle.</p><p><b>◇ Seer</b>A dashed sightline warns of a single shot. Sidestep.</p><p><b>△ Lancer</b>An amber line marks its charge. Move across it.</p><p><b>✹ Warden</b>Find gaps in radial volleys. Leave glowing blast circles before they burst.</p></div><p class="fine">White sparks: hit · scattering shards: defeat · red ring: damage · flickering cyan shield: temporary invulnerability. Both doors stay sealed while hostiles live. Enter the glowing east door to advance.</p></details>
+  </main>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+✔ slash is aimed, range-limited, and one cooldown cannot repeatedly damage (2.939202ms)
+✔ walls block slash hits and player circle movement (3.721459ms)
+✔ melee pursues and visibly winds up before an avoidable close strike (2.109647ms)
+✔ ranged locks its aim during a warning, fires a projectile, and movement evades it (2.35256ms)
+✔ elite has a telegraphed fixed-direction charge, distinct damage, and finite recovery (2.226385ms)
+✔ boss alternates fan and nova; both warnings give movement counterplay (5.870399ms)
+✔ boss nova deals area damage when the player remains inside its marked zone (1.260778ms)
+✔ enemy defeat has its own event and visual, and happens once (0.391118ms)
+✔ combat behavior is independent of 30 Hz versus 144 Hz rendering (2.816093ms)
+✔ seed 17 supports a complete run through doors, combat, rewards, and boss (40.585068ms)
+✔ seed 42 supports a complete run through doors, combat, rewards, and boss (12.503248ms)
+✔ seed parser accepts the entire uint32 range and rejects invalid inputs (5.601599ms)
+✔ 17 and 42 reproduce content twice and differ in all required signatures (1.832963ms)
+✔ every generated route has start + three combat + boss with symmetric connected edges (0.969385ms)
+✔ each combat room offers two different choices and all four effects occur before boss (3.305614ms)
+✔ seed generation remains immutable and the safe start contains no hostiles (0.554302ms)
+✔ visibility paths route around a blocking pillar without intersecting expanded geometry (0.539344ms)
+✔ all enemy spawns in 100 generated seeds can path to the entry corridor (24.946965ms)
+✔ menu rejects movement and combat until a run starts (2.158248ms)
+✔ movement has equal axial and diagonal speed and ignores render-frame partitioning (3.688206ms)
+✔ doors are traversable only in their opening; both combat exits lock until cleared (2.220784ms)
+✔ each upgrade has a material distinct effect and survival health remains bounded (1.185477ms)
+✔ player damage grants temporary invulnerability; zero health enters game over once (0.732464ms)
+✔ fresh runs reset health, upgrades, rooms, encounters, hazards, and progress after either end state (0.761858ms)
+✔ boss defeat completes victory and repeated clears produce no duplicate reward (0.634621ms)
+✔ dynamic combat never mutates seed content signatures (18.325698ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.155012
