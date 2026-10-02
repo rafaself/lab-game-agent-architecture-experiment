@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101722">
+    <title>Dungeon Escape</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header id="hud" class="hud" hidden>
+        <section class="hud-block health-block" aria-label="Player health">
+          <span class="hud-label">HEALTH</span>
+          <span id="health-readout" class="health-readout" aria-live="polite"></span>
+        </section>
+        <section class="hud-block room-block" aria-live="polite">
+          <span class="hud-label">DUNGEON</span>
+          <strong id="room-readout">Room 1 of 5</strong>
+          <span id="room-status" class="room-status">CLEARED</span>
+        </section>
+        <section class="hud-block upgrade-block" aria-live="polite">
+          <span class="hud-label">RUN RELICS</span>
+          <span id="upgrade-readout" class="upgrade-readout">None yet</span>
+        </section>
+        <section class="hud-block seed-block">
+          <span class="hud-label">SEED</span>
+          <strong id="seed-readout">—</strong>
+        </section>
+      </header>
+
+      <div id="game-frame" class="game-frame">
+        <canvas id="game-canvas" width="960" height="640" tabindex="0" aria-label="Dungeon Escape game area">
+          Your browser does not support the HTML canvas used by this game.
+        </canvas>
+
+        <section id="menu-panel" class="overlay" aria-labelledby="game-title">
+          <div class="panel panel-wide">
+            <p class="eyebrow">A small roguelite adventure</p>
+            <h1 id="game-title">Dungeon Escape</h1>
+            <p class="lead">Cross the old chambers, claim three relics, and break the Hollow Crown.</p>
+            <label class="seed-label" for="seed-input">Run seed <span>optional</span></label>
+            <div class="seed-row">
+              <input id="seed-input" type="number" min="0" max="4294967295" step="1" inputmode="numeric" placeholder="Random seed">
+              <button id="start-button" class="button button-primary" type="button">Start run</button>
+            </div>
+            <p id="seed-error" class="error-message" aria-live="polite"></p>
+            <div class="instructions">
+              <h2>Controls</h2>
+              <p><kbd>W A S D</kbd> or <kbd>↑ ← ↓ →</kbd> move</p>
+              <p>Move the mouse to aim. Press <kbd>Space</kbd> or click the left mouse button to strike.</p>
+            </div>
+            <p class="menu-footnote">Rooms lock while enemies remain. Their warning marks show where danger is headed.</p>
+          </div>
+        </section>
+
+        <section id="reward-panel" class="overlay" hidden aria-labelledby="reward-title" aria-modal="true" role="dialog">
+          <div class="panel reward-panel">
+            <p class="eyebrow">Chamber cleared</p>
+            <h2 id="reward-title">Choose a relic</h2>
+            <p class="lead">This relic stays with you until the run ends.</p>
+            <div class="reward-options">
+              <button id="reward-option-0" class="reward-option" type="button">
+                <span class="reward-number">01</span>
+                <span class="reward-copy"><strong></strong><span></span></span>
+                <span class="reward-arrow" aria-hidden="true">↗</span>
+              </button>
+              <button id="reward-option-1" class="reward-option" type="button">
+                <span class="reward-number">02</span>
+                <span class="reward-copy"><strong></strong><span></span></span>
+                <span class="reward-arrow" aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <p class="menu-footnote">Choose one. Both exits open after your choice.</p>
+          </div>
+        </section>
+
+        <section id="end-panel" class="overlay" hidden aria-labelledby="end-title">
+          <div class="panel end-panel">
+            <p id="end-eyebrow" class="eyebrow">The dungeon remembers</p>
+            <h2 id="end-title">The run is over</h2>
+            <p id="end-copy" class="lead"></p>
+            <p id="end-stats" class="end-stats"></p>
+            <div class="end-actions">
+              <button id="again-button" class="button button-primary" type="button">Run again</button>
+              <button id="menu-button" class="button button-quiet" type="button">Main menu</button>
+            </div>
+          </div>
+        </section>
+
+        <div id="toast" class="toast" aria-live="polite" hidden></div>
+      </div>
+      <footer class="footer-bar">
+        <p id="controls-hint">WASD / arrows move · mouse aim · Space / click attack</p>
+        <button id="sound-button" class="sound-button" type="button" aria-pressed="true" aria-label="Toggle sound">Sound on</button>
+      </footer>
+    </main>
+    <script type="module" src="./src/main.mjs"></script>
+  </body>
+</html>
