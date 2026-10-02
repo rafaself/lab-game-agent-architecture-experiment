@@ -1,0 +1,3 @@
+interface:
+  display_name: "Game UX and Readability"
+  short_description: "Clarify controls, HUD, and feedback"

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Top-Down Action Systems"
+  short_description: "Implement movement and combat"
